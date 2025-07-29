@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.kroc_note.ui.data.Note
+import com.example.kroc_note.ui.data.NoteState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(navController: NavController, id: Int) {
+fun DetailScreen(navController: NavController, id: Int, state: NoteState) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -36,21 +38,18 @@ fun DetailScreen(navController: NavController, id: Int) {
                 .padding(padding),
             contentAlignment = Alignment.Center
         ) {
-            Note note =
-            Note(id)
+            val note = state.notes.find {it.id == id}
+
+            if (note == null){
+                Text("Note introuvable", style = MaterialTheme.typography.headlineMedium)
+            }else{
+                Note(note)
+            }
         }
     }
 }
 
-@Preview
 @Composable
-fun PreviewDetailScreen(){
-    val navController = rememberNavController()
-    DetailScreen(navController, 6)
-}
-
-
-@Composable
-fun Note(id: Int){
-    Text(text = "Hello 👋, note n°$id", style = MaterialTheme.typography.headlineMedium)
+fun Note(note: Note){
+    Text(text = "Hello 👋, note n°${note.id}", style = MaterialTheme.typography.headlineMedium)
 }

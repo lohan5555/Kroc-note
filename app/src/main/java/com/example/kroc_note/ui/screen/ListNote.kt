@@ -139,7 +139,7 @@ fun ListNoteCard(notes: List<Note>, paddingValues: PaddingValues, navController:
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(notes) { note ->
-            NoteCard(note.id, note.titre, note.body, navController)
+            NoteCard(note, navController)
         }
     }
 }
@@ -161,21 +161,21 @@ fun PreviewListNoteCard(){
 
 
 @Composable
-fun NoteCard(id: Int, titre: String, body: String, navController: NavController){
+fun NoteCard(note: Note, navController: NavController){
     Box(modifier = Modifier
         .padding(8.dp)
         .size(200.dp)
         .clip(RoundedCornerShape(16.dp))
         .background(MaterialTheme.colorScheme.primary)
-        .clickable { navController.navigate("Detail/${id}"); println("id que l'on envoie: $id") }
+        .clickable { navController.navigate("Detail/${note.id}") }
     ){
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Text(text = titre, color = MaterialTheme.colorScheme.onPrimary)
-            Text(text = body, color = MaterialTheme.colorScheme.onPrimary)
+            Text(text = note.titre, color = MaterialTheme.colorScheme.onPrimary)
+            Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary)
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 horizontalArrangement = Arrangement.End,
@@ -190,12 +190,3 @@ fun NoteCard(id: Int, titre: String, body: String, navController: NavController)
         }
     }
 }
-
-
-@Preview
-@Composable
-fun PreviewNoteCard(){
-    val navController = rememberNavController()
-    NoteCard(0,"Ma note","blablabla", navController)
-}
-

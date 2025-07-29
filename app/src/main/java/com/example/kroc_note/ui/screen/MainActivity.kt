@@ -63,7 +63,8 @@ class MainActivity : ComponentActivity() {
                         val id = backStackEntry.arguments?.getInt("id") ?: -1
                         DetailScreen(
                             navController = navController,
-                            id = id
+                            id = id,
+                            state = state
                         )
                     }
                 }
