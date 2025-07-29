@@ -20,33 +20,43 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.kroc_note.ui.data.Note
 import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(
     state: NoteState,
-    onEvent: (NoteEvent) -> Unit
+    onEvent: (NoteEvent) -> Unit,
+    navController: NavController
 ){
-    val navController = rememberNavController()
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Kroc-Note") },
+                actions = {
+                    Icon(Icons.Default.MoreVert, contentDescription = "")
+                }
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 onEvent(NoteEvent.ShowDialog)
@@ -115,25 +125,12 @@ fun NoteScreen(
                 }
             }
         }*/
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
-        ) { ListNoteCard(state.notes, padding, navController) }
-
-
-        NavHost(navController = navController, startDestination = "home") {
-            composable("home") {  }
-            composable("Detail/{titre}") { backStackEntry ->
-                val titre = backStackEntry.arguments?.getString("titre") ?: "pas de titre"
-                DetailScreen(navController,titre) }
-        }
+        ListNoteCard(state.notes, padding, navController)
     }
 }
 
-
 @Composable
-fun ListNoteCard(notes: List<Note>, paddingValues: PaddingValues, navController: NavHostController){
+fun ListNoteCard(notes: List<Note>, paddingValues: PaddingValues, navController: NavController){
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = paddingValues,
@@ -164,7 +161,7 @@ fun PreviewListNoteCard(){
 
 
 @Composable
-fun NoteCard(titre: String, body: String, navController: NavHostController){
+fun NoteCard(titre: String, body: String, navController: NavController){
     Box(modifier = Modifier
         .padding(8.dp)
         .size(200.dp)

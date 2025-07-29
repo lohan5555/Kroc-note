@@ -5,12 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.compose.runtime.collectAsState
 import com.example.kroc_note.ui.data.NoteViewModel
 import com.example.kroc_note.ui.theme.KrocNoteTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.kroc_note.ui.data.AppDatabase
 
@@ -39,8 +43,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KrocNoteTheme {
+                val navController = rememberNavController()
                 val state by viewModel.state.collectAsState()
-                NoteScreen(state = state , onEvent = viewModel::onEvent)
+
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        NoteScreen(
+                            state = state,
+                            onEvent = viewModel::onEvent,
+                            navController = navController
+                        )
+                    }
+                    composable("Detail/{titre}") { backStackEntry ->
+                        val titre = backStackEntry.arguments?.getString("titre") ?: "Pas de titre"
+                        DetailScreen(
+                            navController = navController,
+                            titre = titre
+                        )
+                    }
+                }
             }
         }
     }

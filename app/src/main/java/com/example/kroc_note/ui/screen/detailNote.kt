@@ -16,7 +16,7 @@ fun DetailScreen(navController: NavController, titre: String) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Kroc-Note") },
+                title = { Text("Kroc-Note détail") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
