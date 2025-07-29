@@ -73,7 +73,9 @@ fun NoteScreen(
                     contentDescription = "add note")
             }
         },
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
     ){ padding ->
         if(state.isAddingNote){
             AddNoteDialog(state = state, onEvent = onEvent)
@@ -130,7 +132,12 @@ fun NoteScreen(
                 }
             }
         }*/
-        ListNoteCard(state.notes, padding, navController)
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .padding(16.dp)
+        ) { ListNoteCard(state.notes, padding, navController) }
+
 
         NavHost(navController = navController, startDestination = "home") {
             composable("home") {  }
