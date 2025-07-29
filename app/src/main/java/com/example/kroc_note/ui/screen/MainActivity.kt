@@ -13,8 +13,10 @@ import com.example.kroc_note.ui.theme.KrocNoteTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavType
 
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.room.Room
 import com.example.kroc_note.ui.data.AppDatabase
 
@@ -54,11 +56,14 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
-                    composable("Detail/{titre}") { backStackEntry ->
-                        val titre = backStackEntry.arguments?.getString("titre") ?: "Pas de titre"
+                    composable(
+                        "Detail/{id}",
+                        arguments = listOf(navArgument("id"){type = NavType.IntType})
+                    ) { backStackEntry ->
+                        val id = backStackEntry.arguments?.getInt("id") ?: -1
                         DetailScreen(
                             navController = navController,
-                            titre = titre
+                            id = id
                         )
                     }
                 }

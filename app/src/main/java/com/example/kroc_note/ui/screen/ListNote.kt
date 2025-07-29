@@ -139,7 +139,7 @@ fun ListNoteCard(notes: List<Note>, paddingValues: PaddingValues, navController:
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(notes) { note ->
-            NoteCard(note.titre, note.body, navController)
+            NoteCard(note.id, note.titre, note.body, navController)
         }
     }
 }
@@ -161,13 +161,13 @@ fun PreviewListNoteCard(){
 
 
 @Composable
-fun NoteCard(titre: String, body: String, navController: NavController){
+fun NoteCard(id: Int, titre: String, body: String, navController: NavController){
     Box(modifier = Modifier
         .padding(8.dp)
         .size(200.dp)
         .clip(RoundedCornerShape(16.dp))
         .background(MaterialTheme.colorScheme.primary)
-        .clickable { navController.navigate("Detail/${titre}") }
+        .clickable { navController.navigate("Detail/${id}"); println("id que l'on envoie: $id") }
     ){
         Column(
             modifier = Modifier
@@ -181,15 +181,11 @@ fun NoteCard(titre: String, body: String, navController: NavController){
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = {navController.navigate("Detail/$titre")},
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "aller à Detail",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = "aller à Detail",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
@@ -200,6 +196,6 @@ fun NoteCard(titre: String, body: String, navController: NavController){
 @Composable
 fun PreviewNoteCard(){
     val navController = rememberNavController()
-    NoteCard("Ma note","blablabla", navController)
+    NoteCard(0,"Ma note","blablabla", navController)
 }
 

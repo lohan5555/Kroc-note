@@ -8,11 +8,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(navController: NavController, titre: String) {
+fun DetailScreen(navController: NavController, id: Int) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -34,7 +36,21 @@ fun DetailScreen(navController: NavController, titre: String) {
                 .padding(padding),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Hello 👋 $titre", style = MaterialTheme.typography.headlineMedium)
+            Note note =
+            Note(id)
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewDetailScreen(){
+    val navController = rememberNavController()
+    DetailScreen(navController, 6)
+}
+
+
+@Composable
+fun Note(id: Int){
+    Text(text = "Hello 👋, note n°$id", style = MaterialTheme.typography.headlineMedium)
 }
