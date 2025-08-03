@@ -99,6 +99,14 @@ class NoteViewModel(
                     body = event.body
                 ) }
             }
+
+            is NoteEvent.DeleteManyNoteById -> {
+                viewModelScope.launch {
+                    dao.deleteAllById(
+                        ids = event.ids
+                    )
+                }
+            }
         }
     }
 }

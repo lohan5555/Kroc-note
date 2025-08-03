@@ -2,7 +2,7 @@ package com.example.kroc_note.ui.screen
 
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +38,18 @@ import androidx.navigation.NavController
 import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.selects.select
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,12 +59,51 @@ fun NoteScreen(
     onEvent: (NoteEvent) -> Unit,
     navController: NavController
 ){
+    var noteSelect by remember { mutableStateOf(setOf<Int>()) }
+
     Scaffold(
         topBar = {
+            var expanded by remember { mutableStateOf(false) }
             TopAppBar(
                 title = { Text("Kroc-Note") },
                 actions = {
-                    Icon(Icons.Default.MoreVert, contentDescription = "")
+                    if(noteSelect.isEmpty()){
+                        IconButton(onClick = {expanded = true}) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "Menu déroulant")
+                        }
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Calendrier") },
+                                onClick = {
+                                    expanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Rechercher") },
+                                onClick = {
+                                    expanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Thème") },
+                                onClick = {
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }else{
+                        Icon(Icons.Default.Share, contentDescription = "partager")
+                        IconButton(onClick = {
+                            onEvent(NoteEvent.DeleteManyNoteById(noteSelect.toList()))
+                            noteSelect = emptySet()
+                        }) {
+                            Icon(Icons.Default.Delete, contentDescription = "supprimer")
+                        }
+                    }
                 }
             )
         },
@@ -72,64 +123,46 @@ fun NoteScreen(
         if(state.isAddingNote){
             AddNoteDialog(state = state, onEvent = onEvent)
         }
-
-        /*LazyColumn(
-            contentPadding = padding,
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ){
-            item{
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .horizontalScroll(rememberScrollState()),
-                    verticalAlignment = CenterVertically
-                ) {
-                    SortType.entries.forEach { sortType ->
-                        Row(
-                            modifier = Modifier
-                                .clickable {
-                                    onEvent(NoteEvent.SortNote(sortType))
-                                },
-                            verticalAlignment = CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = state.sortType == sortType,
-                                onClick = {
-                                    onEvent(NoteEvent.SortNote(sortType))
-                                }
-                            )
-                            Text(text = sortType.name)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            if (noteSelect.isNotEmpty()) {
+                                noteSelect = emptySet()
+                                println(noteSelect)
+                            }
                         }
-                    }
+                    )
                 }
-            }
-            items(state.notes){note ->
-                Row(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = "${note.titre} ${note.body} ${note.id}",
-                            fontSize = 20.sp
-                        )
+        ) {
+            ListNoteCard(
+                notes = state.notes,
+                paddingValues = padding,
+                navController = navController,
+                noteSelect = noteSelect,
+                onToggleSelection = { id ->
+                    noteSelect = if (noteSelect.contains(id)){
+                        noteSelect - id
+                    } else {
+                        noteSelect + id
                     }
-                    IconButton(onClick = {
-                        onEvent(NoteEvent.DeleteNote(note))
-                    }) {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = "delete note")
-                    }
+                    println(noteSelect)
                 }
-            }
-        }*/
-        ListNoteCard(state.notes, padding, navController)
+            )
+        }
     }
 }
 
 @Composable
-fun ListNoteCard(notes: List<Note>, paddingValues: PaddingValues, navController: NavController){
+fun ListNoteCard(
+    notes: List<Note>,
+    paddingValues: PaddingValues,
+    navController: NavController,
+    noteSelect: Set<Int>,
+    onToggleSelection: (Int) -> Unit
+){
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = paddingValues,
@@ -138,7 +171,13 @@ fun ListNoteCard(notes: List<Note>, paddingValues: PaddingValues, navController:
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(notes) { note ->
-            NoteCard(note, navController)
+            NoteCard(
+                note = note,
+                navController = navController,
+                isSelected = noteSelect.contains(note.idNote),
+                onToggleSelection = onToggleSelection,
+                selectedNote = noteSelect
+            )
         }
     }
 }
@@ -161,16 +200,40 @@ fun PreviewListNoteCard(){
 
 
 @Composable
-fun NoteCard(note: Note, navController: NavController){
+fun NoteCard(
+    note: Note,
+    navController: NavController,
+    isSelected: Boolean,
+    onToggleSelection: (Int) -> Unit,
+    selectedNote: Set<Int>
+){
 
     val couleurAffichage: Color = note.couleur.color
+    val borderColor = if (isSelected) Color.Black else Color.Transparent
 
     Box(modifier = Modifier
         .padding(8.dp)
         .size(200.dp)
         .clip(RoundedCornerShape(16.dp))
         .background(couleurAffichage)
-        .clickable { navController.navigate("Detail/${note.idNote}") }
+        .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(16.dp))
+        .pointerInput(selectedNote) {
+            detectTapGestures(
+                onTap = {
+                    println("on a ça: $selectedNote")
+                    if (selectedNote.isNotEmpty()) {
+                        onToggleSelection(note.idNote)
+                        println("test 1")
+                    } else {
+                        navController.navigate("Detail/${note.idNote}")
+                        println("test 2")
+                    }
+                },
+                onLongPress = {
+                    onToggleSelection(note.idNote)
+                }
+            )
+        }
     ){
         Column(
             modifier = Modifier

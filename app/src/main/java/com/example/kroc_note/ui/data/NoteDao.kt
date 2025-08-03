@@ -14,6 +14,9 @@ interface NoteDao {
     @Delete
     suspend fun delete(note: Note)
 
+    @Query("DELETE FROM note WHERE idNote IN (:ids)")
+    suspend fun deleteAllById(ids: List<Int>)
+
     @Query("SELECT * FROM note ORDER BY titre ASC")
     fun getAllNotesByTitre(): Flow<List<Note>>
 

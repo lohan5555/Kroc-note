@@ -86,15 +86,6 @@ fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController)
         Text(text = note.titre, style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onPrimary)
         Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary)
 
-        //bouton de suppression temporaire
-        IconButton(onClick = {
-            navController.popBackStack()
-            onEvent(NoteEvent.DeleteNote(note))
-        }) {
-            Icon(Icons.Default.Delete, contentDescription = "delete note",tint = MaterialTheme.colorScheme.onPrimary)
-        }
-
-
         Spacer(modifier = Modifier.weight(1f)) //pour être en bas de la page
         Column(
             modifier = Modifier.fillMaxWidth(),
