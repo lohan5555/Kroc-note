@@ -1,4 +1,4 @@
-package com.example.kroc_note.ui.data;
+package com.example.kroc_note.ui.data.type;
 
 public enum SortType {
     TITRE,

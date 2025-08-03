@@ -3,7 +3,7 @@ package com.example.kroc_note.ui.data.bddClass
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.example.kroc_note.ui.data.TypeMedia
+import com.example.kroc_note.ui.data.type.TypeMedia
 
 @Entity(
     foreignKeys = [ForeignKey(

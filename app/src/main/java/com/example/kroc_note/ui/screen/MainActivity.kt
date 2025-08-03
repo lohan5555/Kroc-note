@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
             AppDatabase::class.java,
             "notes.db"
         )
-            .fallbackToDestructiveMigration(true)
+            .fallbackToDestructiveMigration(true)  //pour détruire et recreer la bdd quand elle est modifier (bien prod, pas en déploiment)
             .build()
     }
     private val viewModel by viewModels<NoteViewModel>(

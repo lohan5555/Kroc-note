@@ -1,6 +1,7 @@
 package com.example.kroc_note.ui.data
 
 import com.example.kroc_note.ui.data.bddClass.Note
+import com.example.kroc_note.ui.data.type.SortType
 
 sealed interface NoteEvent {
     object SaveNote: NoteEvent

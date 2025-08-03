@@ -31,17 +31,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
-import com.example.kroc_note.ui.theme.CouleurNote
-import com.example.kroc_note.ui.theme.Pink80
-import java.time.LocalDateTime
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -166,11 +162,14 @@ fun PreviewListNoteCard(){
 
 @Composable
 fun NoteCard(note: Note, navController: NavController){
+
+    val couleurAffichage: Color = note.couleur.color
+
     Box(modifier = Modifier
         .padding(8.dp)
         .size(200.dp)
         .clip(RoundedCornerShape(16.dp))
-        .background(MaterialTheme.colorScheme.primary)
+        .background(couleurAffichage)
         .clickable { navController.navigate("Detail/${note.idNote}") }
     ){
         Column(

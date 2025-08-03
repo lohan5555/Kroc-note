@@ -3,10 +3,12 @@ package com.example.kroc_note.ui.data.bddClass
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
-import com.example.kroc_note.ui.data.TypeMedia
-import com.example.kroc_note.ui.theme.CouleurNote
+import com.example.kroc_note.ui.data.type.TypeMedia
+import com.example.kroc_note.ui.data.type.CouleurNote
+import java.time.Instant
 
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
@@ -30,13 +32,15 @@ class Converters {
     @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromLocalDateTime(date: LocalDateTime): String {
-        return date.format(formatter)
+        return date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli().toString()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun toLocalDateTime(dateString: String): LocalDateTime {
-        return LocalDateTime.parse(dateString, formatter)
+        return Instant.ofEpochMilli(dateString.toLong())
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime()
     }
 
     //-----------------pour le type TypeMedia----------------------------
