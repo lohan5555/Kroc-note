@@ -1,5 +1,7 @@
 package com.example.kroc_note.ui.data
 
+import com.example.kroc_note.ui.data.bddClass.Note
+
 sealed interface NoteEvent {
     object SaveNote: NoteEvent
     data class SetTitre(val titre: String): NoteEvent

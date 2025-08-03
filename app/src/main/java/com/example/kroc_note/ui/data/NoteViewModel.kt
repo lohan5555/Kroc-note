@@ -1,7 +1,12 @@
 package com.example.kroc_note.ui.data
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kroc_note.ui.data.bddClass.Note
+import com.example.kroc_note.ui.data.dao.NoteDao
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -15,6 +20,7 @@ class NoteViewModel(
 ): ViewModel() {
 
     private val _sortType = MutableStateFlow(SortType.TITRE)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val _notes = _sortType
         .flatMapLatest { sortType ->
             when(sortType){
@@ -23,7 +29,9 @@ class NoteViewModel(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    @RequiresApi(Build.VERSION_CODES.O)
     private val _state = MutableStateFlow(NoteState())
+    @RequiresApi(Build.VERSION_CODES.O)
     val state = combine(_state, _sortType, _notes){ state, sortType, notes ->
         state.copy(
             notes = notes,
@@ -31,11 +39,15 @@ class NoteViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteState())
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: NoteEvent){
         when(event){
             NoteEvent.SaveNote -> {
                 val titre = state.value.titre
                 val body = state.value.body
+                val couleur = state.value.couleur
+                val dateDerniereModification = state.value.dateDerniereModification
+                val dateCreation = state.value.dateCreation
 
                 if(titre.isBlank() || body.isBlank()){
                     return
@@ -43,7 +55,10 @@ class NoteViewModel(
 
                 val note = Note(
                     titre = titre,
-                    body = body
+                    body = body,
+                    couleur = couleur,
+                    dateDerniereModification = dateDerniereModification,
+                    dateCreation = dateCreation
                 )
                 viewModelScope.launch {
                     dao.upsert(note)

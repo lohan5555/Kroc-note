@@ -8,10 +8,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.kroc_note.ui.data.Note
+import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.NoteState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +36,7 @@ fun DetailScreen(navController: NavController, id: Int, state: NoteState) {
                 .padding(padding),
             contentAlignment = Alignment.Center
         ) {
-            val note = state.notes.find {it.id == id}
+            val note = state.notes.find {it.idNote == id}
 
             if (note == null){
                 Text("Note introuvable", style = MaterialTheme.typography.headlineMedium)
@@ -51,5 +49,5 @@ fun DetailScreen(navController: NavController, id: Int, state: NoteState) {
 
 @Composable
 fun Note(note: Note){
-    Text(text = "Hello 👋, note n°${note.id}", style = MaterialTheme.typography.headlineMedium)
+    Text(text = "Hello 👋, note n°${note.idNote}", style = MaterialTheme.typography.headlineMedium)
 }

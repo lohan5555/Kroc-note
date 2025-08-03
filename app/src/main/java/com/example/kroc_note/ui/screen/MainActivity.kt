@@ -27,7 +27,9 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             AppDatabase::class.java,
             "notes.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(true)
+            .build()
     }
     private val viewModel by viewModels<NoteViewModel>(
         factoryProducer = {

@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,11 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.kroc_note.ui.data.Note
+import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
+import com.example.kroc_note.ui.theme.CouleurNote
+import com.example.kroc_note.ui.theme.Pink80
+import java.time.LocalDateTime
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,20 +147,21 @@ fun ListNoteCard(notes: List<Note>, paddingValues: PaddingValues, navController:
     }
 }
 
+/*
 @Preview
 @Composable
 fun PreviewListNoteCard(){
     val navController = rememberNavController()
     val paddingValues = PaddingValues()
     val notes = listOf(
-        Note(1, "Note 1", "Contenu 1"),
-        Note(2, "Note 2", "Contenu 2"),
-        Note(3, "Note 3", "Contenu 3"),
-        Note(4, "Note 4", "Contenu 4"),
-        Note(5, "Note 5", "Contenu 5"),
+        Note(1, "Note 1", "Contenu 1", CouleurNote.Rose, LocalDateTime.now()),
+        Note(2, "Note 2", "Contenu 2", CouleurNote.Rose),
+        Note(3, "Note 3", "Contenu 3", CouleurNote.Rose),
+        Note(4, "Note 4", "Contenu 4", CouleurNote.Rose),
+        Note(5, "Note 5", "Contenu 5", CouleurNote.Rose),
     )
     ListNoteCard(notes, paddingValues, navController)
-}
+}*/
 
 
 @Composable
@@ -167,14 +171,14 @@ fun NoteCard(note: Note, navController: NavController){
         .size(200.dp)
         .clip(RoundedCornerShape(16.dp))
         .background(MaterialTheme.colorScheme.primary)
-        .clickable { navController.navigate("Detail/${note.id}") }
+        .clickable { navController.navigate("Detail/${note.idNote}") }
     ){
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Text(text = note.titre, color = MaterialTheme.colorScheme.onPrimary)
+            Text(text = note.titre, color = MaterialTheme.colorScheme.onPrimary, fontSize = 30.sp)
             Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary)
             Spacer(modifier = Modifier.weight(1f))
             Row(

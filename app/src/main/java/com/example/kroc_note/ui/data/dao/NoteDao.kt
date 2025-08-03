@@ -1,6 +1,7 @@
-package com.example.kroc_note.ui.data
+package com.example.kroc_note.ui.data.dao
 
 import androidx.room.*
+import com.example.kroc_note.ui.data.bddClass.Note
 import kotlinx.coroutines.flow.Flow
 
 //toute les fonctions qui vont venir modifier notre bdd
