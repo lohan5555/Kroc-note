@@ -21,6 +21,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
 import com.example.kroc_note.ui.data.AppDatabase
+import com.example.kroc_note.ui.theme.ThemePreferences
+import com.example.kroc_note.ui.theme.ThemeViewModel
+import com.example.kroc_note.ui.theme.ThemeViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -48,8 +51,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val preferences = ThemePreferences(applicationContext)
+        val themeViewModel = ViewModelProvider(
+            this,
+            ThemeViewModelFactory(preferences)
+        )[ThemeViewModel::class.java]
+
         setContent {
-            KrocNoteTheme {
+            val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+            KrocNoteTheme(
+                darkTheme = isDarkTheme,
+                dynamicColor = false //pour pouvoir utiliser mes propre couleur
+            ) {
                 val navController = rememberNavController()
                 val state by viewModel.state.collectAsState()
 
@@ -58,7 +72,8 @@ class MainActivity : ComponentActivity() {
                         NoteScreen(
                             state = state,
                             onEvent = viewModel::onEvent,
-                            navController = navController
+                            navController = navController,
+                            onToggleTheme = { themeViewModel.toggleTheme() }
                         )
                     }
                     composable(

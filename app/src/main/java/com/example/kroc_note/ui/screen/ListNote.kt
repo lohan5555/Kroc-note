@@ -39,6 +39,7 @@ import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
@@ -57,7 +58,8 @@ import kotlinx.coroutines.selects.select
 fun NoteScreen(
     state: NoteState,
     onEvent: (NoteEvent) -> Unit,
-    navController: NavController
+    navController: NavController,
+    onToggleTheme: () -> Unit
 ){
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
 
@@ -89,8 +91,10 @@ fun NoteScreen(
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Thème") },
+                                text = {
+                                    Text("Thème") },
                                 onClick = {
+                                    onToggleTheme()
                                     expanded = false
                                 }
                             )
@@ -207,9 +211,8 @@ fun NoteCard(
     onToggleSelection: (Int) -> Unit,
     selectedNote: Set<Int>
 ){
-
     val couleurAffichage: Color = note.couleur.color
-    val borderColor = if (isSelected) Color.Black else Color.Transparent
+    val borderColor = if (isSelected) MaterialTheme.colorScheme.surfaceBright else Color.Transparent
 
     Box(modifier = Modifier
         .padding(8.dp)
