@@ -4,6 +4,7 @@ import androidx.room.*
 import com.example.kroc_note.ui.data.bddClass.Note
 import kotlinx.coroutines.flow.Flow
 
+//dao: data acces object
 //toute les fonctions qui vont venir modifier notre bdd
 @Dao
 interface NoteDao {

@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 import com.example.kroc_note.ui.data.bddClass.Converters
 import com.example.kroc_note.ui.data.dao.NoteDao
 
-//on creer la bdd
+//définit la configuration de la base de données
 @Database(entities = [Note::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
