@@ -1,4 +1,4 @@
-package com.example.kroc_note.ui.data.dao
+package com.example.kroc_note.ui.data
 
 import androidx.room.*
 import com.example.kroc_note.ui.data.bddClass.Note

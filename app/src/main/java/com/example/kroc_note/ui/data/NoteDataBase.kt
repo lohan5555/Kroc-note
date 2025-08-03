@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import com.example.kroc_note.ui.data.bddClass.Note
 import androidx.room.TypeConverters
 import com.example.kroc_note.ui.data.bddClass.Converters
-import com.example.kroc_note.ui.data.dao.NoteDao
 
 //définit la configuration de la base de données
 @Database(entities = [Note::class], version = 3)
