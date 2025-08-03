@@ -1,10 +1,12 @@
 package com.example.kroc_note.ui.screen
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.runtime.collectAsState
@@ -42,6 +44,7 @@ class MainActivity : ComponentActivity() {
     )
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -66,7 +69,8 @@ class MainActivity : ComponentActivity() {
                         DetailScreen(
                             navController = navController,
                             id = id,
-                            state = state
+                            state = state,
+                            onEvent = viewModel::onEvent
                         )
                     }
                 }
