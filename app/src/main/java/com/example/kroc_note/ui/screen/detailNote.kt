@@ -89,12 +89,9 @@ fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController)
             .background(couleurAffichage)
             .padding(16.dp)
     ) {
-        Text(text = note.titre, style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onPrimary)
-        //Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary)
+        StyledTextFielTitre(note.titre, couleurAffichage)
+        StyledTextFieldBody(note.body, couleurAffichage, Modifier.weight(1f))
 
-        StyledTextField(note.body, couleurAffichage, Modifier.weight(1f))
-
-        //Spacer(modifier = Modifier.weight(1f)) //pour être en bas de la page
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -105,8 +102,34 @@ fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController)
     }
 }
 
+
 @Composable
-fun StyledTextField(
+fun StyledTextFielTitre(
+    titre: String,
+    backgroundColor: Color
+){
+    var value by remember { mutableStateOf(titre) }
+
+    TextField(
+        value = value,
+        onValueChange = { value = it },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = backgroundColor,
+            unfocusedContainerColor = backgroundColor,
+            disabledContainerColor = backgroundColor,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            cursorColor = MaterialTheme.colorScheme.onPrimary,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+        ),
+        textStyle = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp),
+    )
+}
+
+@Composable
+fun StyledTextFieldBody(
     body: String,
     backgroundColor: Color,
     modifier: Modifier = Modifier
