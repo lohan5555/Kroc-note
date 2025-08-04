@@ -244,7 +244,7 @@ fun NoteCard(
                 .fillMaxSize()
         ) {
             Text(text = note.titre, color = MaterialTheme.colorScheme.onPrimary, fontSize = 30.sp)
-            Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary)
+            Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary, maxLines = 4)
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 horizontalArrangement = Arrangement.End,

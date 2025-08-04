@@ -12,13 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.bddClass.Note
 import java.time.Instant
@@ -84,9 +90,11 @@ fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController)
             .padding(16.dp)
     ) {
         Text(text = note.titre, style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onPrimary)
-        Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary)
+        //Text(text = note.body, color = MaterialTheme.colorScheme.onPrimary)
 
-        Spacer(modifier = Modifier.weight(1f)) //pour être en bas de la page
+        StyledTextField(note.body, couleurAffichage, Modifier.weight(1f))
+
+        //Spacer(modifier = Modifier.weight(1f)) //pour être en bas de la page
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -95,4 +103,34 @@ fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController)
             Text(text = "Créée le : $dateCreation", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimary)
         }
     }
+}
+
+@Composable
+fun StyledTextField(
+    body: String,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier
+) {
+    var value by remember { mutableStateOf(body) }
+
+    TextField(
+        value = value,
+        onValueChange = { value = it },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = backgroundColor,
+            unfocusedContainerColor = backgroundColor,
+            disabledContainerColor = backgroundColor,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            cursorColor = MaterialTheme.colorScheme.onPrimary,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            ),
+        textStyle = TextStyle(fontWeight = FontWeight.Normal, fontSize = 20.sp),
+        modifier = modifier
+            .fillMaxWidth(0.95f)
+            .padding(bottom = 16.dp)
+            .verticalScroll(rememberScrollState())
+    )
 }
