@@ -5,6 +5,7 @@ import com.example.kroc_note.ui.data.type.SortType
 
 sealed interface NoteEvent {
     object SaveNote: NoteEvent
+    data class  SetId(val idNote: Int): NoteEvent
     data class SetTitre(val titre: String): NoteEvent
     data class SetBody(val body: String): NoteEvent
     object ShowDialog: NoteEvent

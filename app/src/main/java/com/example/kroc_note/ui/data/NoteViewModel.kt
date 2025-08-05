@@ -45,17 +45,19 @@ class NoteViewModel(
     fun onEvent(event: NoteEvent){
         when(event){
             NoteEvent.SaveNote -> {
+                val idNote = state.value.noteId
                 val titre = state.value.titre
                 val body = state.value.body
                 val couleur = state.value.couleur
                 val dateDerniereModification = state.value.dateDerniereModification
                 val dateCreation = state.value.dateCreation
 
-                if(titre.isBlank() || body.isBlank()){
+                if(titre.isBlank()){
                     return
                 }
 
                 val note = Note(
+                    idNote = idNote,
                     titre = titre,
                     body = body,
                     couleur = couleur,
@@ -65,11 +67,13 @@ class NoteViewModel(
                 viewModelScope.launch {
                     dao.upsert(note)
                 }
-                _state.update { it.copy(
-                    isAddingNote = false,
-                    titre = "",
-                    body = ""
-                ) }
+                if(idNote == 0){
+                    _state.update { it.copy(
+                        isAddingNote = false,
+                        titre = "",
+                        body = ""
+                    ) }
+                }
             }
             is NoteEvent.DeleteNote -> {
                 viewModelScope.launch {
@@ -88,6 +92,11 @@ class NoteViewModel(
             }
             is NoteEvent.SortNote -> {
                 _sortType.value = event.sortType
+            }
+            is NoteEvent.SetId -> {
+                _state.update { it.copy(
+                    noteId = event.idNote
+                ) }
             }
             is NoteEvent.SetTitre -> {
                 _state.update { it.copy(

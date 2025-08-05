@@ -135,7 +135,6 @@ fun NoteScreen(
                         onTap = {
                             if (noteSelect.isNotEmpty()) {
                                 noteSelect = emptySet()
-                                println(noteSelect)
                             }
                         }
                     )
@@ -152,7 +151,6 @@ fun NoteScreen(
                     } else {
                         noteSelect + id
                     }
-                    println(noteSelect)
                 }
             )
         }
@@ -223,13 +221,10 @@ fun NoteCard(
         .pointerInput(selectedNote) {
             detectTapGestures(
                 onTap = {
-                    println("on a ça: $selectedNote")
                     if (selectedNote.isNotEmpty()) {
                         onToggleSelection(note.idNote)
-                        println("test 1")
                     } else {
                         navController.navigate("Detail/${note.idNote}")
-                        println("test 2")
                     }
                 },
                 onLongPress = {

@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,10 +46,23 @@ fun DetailScreen(
             TopAppBar(
                 title = { Text("") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                        onEvent(NoteEvent.SetTitre(""))
+                        onEvent(NoteEvent.SetBody(""))
+                        onEvent(NoteEvent.SetId(0))
+                        }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
                     }
                 },
+                actions = {
+                    IconButton(onClick = {
+                        onEvent(NoteEvent.SaveNote)
+                    }) {
+                        Text("save")
+                    }
+
+                }
             )
         }
     ) { padding ->
@@ -60,10 +74,21 @@ fun DetailScreen(
         ) {
             val note = state.notes.find {it.idNote == id}
 
+            if (note != null) {
+                LaunchedEffect(note.idNote) {
+                    if(state.noteId == 0){
+                        onEvent(NoteEvent.SetId(note.idNote))
+                        onEvent(NoteEvent.SetTitre(note.titre))
+                        onEvent(NoteEvent.SetBody(note.body))
+                    }
+                }
+            }
+
+
             if (note == null){
                 Text("Note introuvable", style = MaterialTheme.typography.headlineMedium)
             }else{
-                Note(note, onEvent, navController)
+                Note(note, state, onEvent, navController)
             }
         }
     }
@@ -71,7 +96,7 @@ fun DetailScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController){
+fun Note(note: Note, state: NoteState, onEvent: (NoteEvent) -> Unit, navController: NavController){
     val couleurAffichage: Color = note.couleur.color
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
@@ -89,8 +114,8 @@ fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController)
             .background(couleurAffichage)
             .padding(16.dp)
     ) {
-        StyledTextFielTitre(note.titre, couleurAffichage)
-        StyledTextFieldBody(note.body, couleurAffichage, Modifier.weight(1f))
+        StyledTextFielTitre(state.titre, couleurAffichage, onEvent)
+        StyledTextFieldBody(state.body, couleurAffichage, onEvent, Modifier.weight(1f))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -106,13 +131,15 @@ fun Note(note: Note, onEvent: (NoteEvent) -> Unit, navController: NavController)
 @Composable
 fun StyledTextFielTitre(
     titre: String,
-    backgroundColor: Color
+    backgroundColor: Color,
+    onEvent: (NoteEvent) -> Unit
 ){
-    var value by remember { mutableStateOf(titre) }
 
     TextField(
-        value = value,
-        onValueChange = { value = it },
+        value = titre,
+        onValueChange = {
+            onEvent(NoteEvent.SetTitre(it))
+        },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,
             unfocusedContainerColor = backgroundColor,
@@ -132,13 +159,15 @@ fun StyledTextFielTitre(
 fun StyledTextFieldBody(
     body: String,
     backgroundColor: Color,
+    onEvent: (NoteEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var value by remember { mutableStateOf(body) }
 
     TextField(
-        value = value,
-        onValueChange = { value = it },
+        value = body,
+        onValueChange = {
+            onEvent(NoteEvent.SetBody(it))
+        },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,
             unfocusedContainerColor = backgroundColor,

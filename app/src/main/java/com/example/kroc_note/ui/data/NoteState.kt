@@ -9,6 +9,8 @@ import com.example.kroc_note.ui.data.type.CouleurNote
 data class NoteState(
     val notes: List<Note> = emptyList(),
 
+
+    val noteId:Int = 0,
     val titre:String = "",
     val body:String = "",
     val couleur: CouleurNote = CouleurNote.Violet,
