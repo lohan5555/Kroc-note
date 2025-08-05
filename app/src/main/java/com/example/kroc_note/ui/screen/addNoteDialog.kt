@@ -30,12 +30,12 @@ fun AddNoteDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TextField(
-                    value = state.titre,
+                    value = "",//state.titre,
                     onValueChange = { onEvent(NoteEvent.SetTitre(it)) },
                     placeholder = { Text("Titre") }
                 )
                 TextField(
-                    value = state.body,
+                    value = "",// state.body,
                     onValueChange = { onEvent(NoteEvent.SetBody(it)) },
                     placeholder = { Text("Contenu") }
                 )

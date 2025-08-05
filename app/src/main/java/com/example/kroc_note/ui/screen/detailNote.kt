@@ -48,9 +48,6 @@ fun DetailScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-                        onEvent(NoteEvent.SetTitre(""))
-                        onEvent(NoteEvent.SetBody(""))
-                        onEvent(NoteEvent.SetId(0))
                         }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
                     }
