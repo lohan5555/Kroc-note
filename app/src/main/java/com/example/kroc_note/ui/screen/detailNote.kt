@@ -48,18 +48,14 @@ fun DetailScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
+                        onEvent(NoteEvent.SaveNote)
+                        onEvent(NoteEvent.SetId(0))
+                        onEvent(NoteEvent.SetTitre(""))
+                        onEvent(NoteEvent.SetBody(""))
                         }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
                     }
                 },
-                actions = {
-                    IconButton(onClick = {
-                        onEvent(NoteEvent.SaveNote)
-                    }) {
-                        Text("save")
-                    }
-
-                }
             )
         }
     ) { padding ->

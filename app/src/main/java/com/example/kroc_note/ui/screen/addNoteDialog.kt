@@ -10,6 +10,7 @@ import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 
 
@@ -30,12 +31,12 @@ fun AddNoteDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TextField(
-                    value = "",//state.titre,
+                    value = state.titre,
                     onValueChange = { onEvent(NoteEvent.SetTitre(it)) },
                     placeholder = { Text("Titre") }
                 )
                 TextField(
-                    value = "",// state.body,
+                    value = state.body,
                     onValueChange = { onEvent(NoteEvent.SetBody(it)) },
                     placeholder = { Text("Contenu") }
                 )

@@ -49,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.selects.select
 
@@ -164,22 +165,33 @@ fun ListNoteCard(
     navController: NavController,
     noteSelect: Set<Int>,
     onToggleSelection: (Int) -> Unit
-){
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = paddingValues,
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(notes) { note ->
-            NoteCard(
-                note = note,
-                navController = navController,
-                isSelected = noteSelect.contains(note.idNote),
-                onToggleSelection = onToggleSelection,
-                selectedNote = noteSelect
-            )
+) {
+    if (notes.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "Aucune note")
+        }
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = paddingValues,
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(notes) { note ->
+                NoteCard(
+                    note = note,
+                    navController = navController,
+                    isSelected = noteSelect.contains(note.idNote),
+                    onToggleSelection = onToggleSelection,
+                    selectedNote = noteSelect
+                )
+            }
         }
     }
 }
