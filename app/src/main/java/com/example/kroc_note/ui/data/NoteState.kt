@@ -18,5 +18,5 @@ data class NoteState(
     val dateCreation: Long = System.currentTimeMillis(),
 
     val isAddingNote: Boolean = false,
-    val sortType: SortType = SortType.TITRE
+    val sortType: SortType = SortType.DATE_CREATION
 )

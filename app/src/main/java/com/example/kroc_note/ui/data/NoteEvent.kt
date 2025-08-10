@@ -7,6 +7,8 @@ sealed interface NoteEvent {
     object SaveNote: NoteEvent
     data class  SetId(val idNote: Int): NoteEvent
     data class SetTitre(val titre: String): NoteEvent
+    data class SetDateCreation(val dateCreation: Long): NoteEvent
+    data class SetDateModification(val dateModification: Long): NoteEvent
     data class SetBody(val body: String): NoteEvent
     object ShowDialog: NoteEvent
     object HideDialog: NoteEvent

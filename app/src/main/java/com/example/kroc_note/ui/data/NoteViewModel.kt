@@ -21,13 +21,14 @@ class NoteViewModel(
     private val dao: NoteDao
 ): ViewModel() {
 
-    private val _sortType = MutableStateFlow(SortType.TITRE)
+    private val _sortType = MutableStateFlow(SortType.DATE_CREATION)
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _notes = _sortType
         .flatMapLatest { sortType ->
             when(sortType){
                 SortType.TITRE -> dao.getAllNotesByTitre()
                 SortType.BODY -> dao.getAllNotesByBody()
+                SortType.DATE_CREATION -> dao.getAllNotesByDateCreation()
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -108,7 +109,16 @@ class NoteViewModel(
                     body = event.body
                 ) }
             }
-
+            is NoteEvent.SetDateCreation -> {
+                _state.update { it.copy(
+                    dateCreation = event.dateCreation
+                ) }
+            }
+            is NoteEvent.SetDateModification -> {
+                _state.update { it.copy(
+                    dateCreation = event.dateModification
+                ) }
+            }
             is NoteEvent.DeleteManyNoteById -> {
                 viewModelScope.launch {
                     dao.deleteAllById(

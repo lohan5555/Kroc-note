@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 //toute les fonctions qui vont venir modifier notre bdd
 @Dao
 interface NoteDao {
-    @Upsert  //Insert ou Update en fonction de si l'id existe déjà ou pas
-    suspend fun upsert(note: Note)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(note: Note): Long
 
     @Delete
     suspend fun delete(note: Note)
@@ -22,6 +22,9 @@ interface NoteDao {
 
     @Query("SELECT * FROM note ORDER BY body ASC")
     fun getAllNotesByBody(): Flow<List<Note>>
+
+    @Query("SELECT * FROM note ORDER BY dateCreation DESC")
+    fun getAllNotesByDateCreation(): Flow<List<Note>>
 }
 
 
