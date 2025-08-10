@@ -70,7 +70,6 @@ class NoteViewModel(
                 }
                 if(idNote == 0){
                     _state.update { it.copy(
-                        isAddingNote = false,
                         titre = "",
                         body = ""
                     ) }
@@ -80,16 +79,6 @@ class NoteViewModel(
                 viewModelScope.launch {
                     dao.delete(event.note)
                 }
-            }
-            NoteEvent.ShowDialog -> {
-                _state.update { it.copy(
-                    isAddingNote = true
-                ) }
-            }
-            NoteEvent.HideDialog -> {
-                _state.update { it.copy(
-                    isAddingNote = false
-                ) }
             }
             is NoteEvent.SortNote -> {
                 _sortType.value = event.sortType

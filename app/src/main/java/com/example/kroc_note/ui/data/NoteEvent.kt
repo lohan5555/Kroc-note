@@ -10,8 +10,6 @@ sealed interface NoteEvent {
     data class SetDateCreation(val dateCreation: Long): NoteEvent
     data class SetDateModification(val dateModification: Long): NoteEvent
     data class SetBody(val body: String): NoteEvent
-    object ShowDialog: NoteEvent
-    object HideDialog: NoteEvent
     data class SortNote(val sortType: SortType): NoteEvent
     data class DeleteNote(val note: Note): NoteEvent
     data class DeleteManyNoteById(val ids: List<Int>): NoteEvent

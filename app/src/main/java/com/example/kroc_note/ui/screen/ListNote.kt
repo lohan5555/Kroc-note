@@ -150,9 +150,6 @@ fun NoteScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ){ padding ->
-        if(state.isAddingNote){
-            AddNoteDialog(state = state, onEvent = onEvent)
-        }
         Box(
             modifier = Modifier
                 .padding(padding)
