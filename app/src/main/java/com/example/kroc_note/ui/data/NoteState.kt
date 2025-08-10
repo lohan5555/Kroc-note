@@ -1,7 +1,5 @@
 package com.example.kroc_note.ui.data
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.type.SortType
 import com.example.kroc_note.ui.data.type.CouleurNote
@@ -18,5 +16,5 @@ data class NoteState(
     val dateCreation: Long = System.currentTimeMillis(),
 
     val isAddingNote: Boolean = false,
-    val sortType: SortType = SortType.DATE_CREATION
+    val sortType: SortType = SortType.RECENTE
 )

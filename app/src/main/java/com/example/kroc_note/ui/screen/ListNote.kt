@@ -73,7 +73,7 @@ fun NoteScreen(
 ){
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
-    //onEvent(NoteEvent.SortNote(SortType.DATE_CREATION))
+    //onEvent(NoteEvent.SortNote(SortType.CREATION))
 
     Scaffold(
         topBar = {

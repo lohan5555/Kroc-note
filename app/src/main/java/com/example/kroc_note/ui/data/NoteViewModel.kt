@@ -14,21 +14,21 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.ZoneId
 
 class NoteViewModel(
     private val dao: NoteDao
 ): ViewModel() {
 
-    private val _sortType = MutableStateFlow(SortType.DATE_CREATION)
+    private val _sortType = MutableStateFlow(SortType.RECENTE)
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _notes = _sortType
         .flatMapLatest { sortType ->
             when(sortType){
-                SortType.TITRE -> dao.getAllNotesByTitre()
-                SortType.BODY -> dao.getAllNotesByBody()
-                SortType.DATE_CREATION -> dao.getAllNotesByDateCreation()
+                SortType.A_Z -> dao.getAllNotesAlphabetiqueASC()
+                SortType.Z_A -> dao.getAllNotesAlphabetiqueDESC()
+                SortType.RECENTE -> dao.getAllNotesByDateCreationDESC()
+                SortType.ANCIENNE -> dao.getAllNotesByDateCreationASC()
+                SortType.MODIF_RECENTE -> dao.getAllNotesByDateModif()
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -53,7 +53,7 @@ class NoteViewModel(
                 val dateDerniereModification = state.value.dateDerniereModification
                 val dateCreation = state.value.dateCreation
 
-                if(titre.isBlank()){
+                if(titre.isBlank()){  //une note doit avoir au moins un titre
                     return
                 }
 
