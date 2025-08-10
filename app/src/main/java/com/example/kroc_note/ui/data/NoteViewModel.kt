@@ -105,7 +105,7 @@ class NoteViewModel(
             }
             is NoteEvent.SetDateModification -> {
                 _state.update { it.copy(
-                    dateCreation = event.dateModification
+                    dateDerniereModification = event.dateModification
                 ) }
             }
             is NoteEvent.DeleteManyNoteById -> {

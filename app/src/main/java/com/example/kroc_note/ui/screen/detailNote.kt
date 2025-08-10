@@ -41,6 +41,7 @@ fun DetailScreen(
     state: NoteState,
     onEvent: (NoteEvent) -> Unit
 ) {
+    val note = state.notes.find {it.idNote == id}
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,6 +53,8 @@ fun DetailScreen(
                         onEvent(NoteEvent.SetId(0))
                         onEvent(NoteEvent.SetTitre(""))
                         onEvent(NoteEvent.SetBody(""))
+                        onEvent(NoteEvent.SetDateCreation(System.currentTimeMillis()))
+                        onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
                         }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
                     }
@@ -65,14 +68,14 @@ fun DetailScreen(
                 .padding(padding),
             contentAlignment = Alignment.Center
         ) {
-            val note = state.notes.find {it.idNote == id}
-
             if (note != null) {
                 LaunchedEffect(note.idNote) {
                     if(state.noteId == 0){
                         onEvent(NoteEvent.SetId(note.idNote))
                         onEvent(NoteEvent.SetTitre(note.titre))
                         onEvent(NoteEvent.SetBody(note.body))
+                        onEvent(NoteEvent.SetDateCreation(note.dateCreation))
+                        onEvent(NoteEvent.SetDateModification(note.dateDerniereModification))
                     }
                 }
             }
@@ -132,6 +135,7 @@ fun StyledTextFielTitre(
         value = titre,
         onValueChange = {
             onEvent(NoteEvent.SetTitre(it))
+            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
         },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,
@@ -160,6 +164,7 @@ fun StyledTextFieldBody(
         value = body,
         onValueChange = {
             onEvent(NoteEvent.SetBody(it))
+            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
         },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,
