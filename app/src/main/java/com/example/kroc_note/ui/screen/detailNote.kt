@@ -10,10 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
@@ -74,6 +76,7 @@ fun DetailScreen(
                         onEvent(NoteEvent.SetId(note.idNote))
                         onEvent(NoteEvent.SetTitre(note.titre))
                         onEvent(NoteEvent.SetBody(note.body))
+                        onEvent(NoteEvent.SetColor(note.couleur))
                         onEvent(NoteEvent.SetDateCreation(note.dateCreation))
                         onEvent(NoteEvent.SetDateModification(note.dateDerniereModification))
                     }
@@ -138,19 +141,35 @@ fun Note(note: Note,
                                     },
                                 verticalAlignment = CenterVertically
                             ) {
-                                RadioButton(
-                                    colors = RadioButtonColors(
-                                        couleur.color,
-                                        unselectedColor = couleur.color,
-                                        disabledSelectedColor = couleurAffichage,
-                                        disabledUnselectedColor = couleurAffichage
-                                    ),
-                                    selected = state.couleur == couleur,
-                                    onClick = {
-                                        onEvent(NoteEvent.SetColor(couleur))
-                                        onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
-                                    }
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .then(
+                                            if (state.couleur == couleur) {
+                                                Modifier.border(
+                                                    width = 2.dp,
+                                                    color = MaterialTheme.colorScheme.onPrimary,
+                                                    shape = CircleShape
+                                                )
+                                            } else Modifier
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    RadioButton(
+                                        colors = RadioButtonColors(
+                                            selectedColor = couleur.color,
+                                            unselectedColor = couleur.color,
+                                            disabledSelectedColor = couleurAffichage,
+                                            disabledUnselectedColor = couleurAffichage
+                                        ),
+                                        selected = state.couleur == couleur,
+                                        onClick = {
+                                            onEvent(NoteEvent.SetColor(couleur))
+                                            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
+                                        }
+                                    )
+                                }
+
                             }
                         }
                     }
