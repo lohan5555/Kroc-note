@@ -50,7 +50,7 @@ fun DetailScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-                        onEvent(NoteEvent.SaveNote)
+                        //onEvent(NoteEvent.SaveNote)
                         onEvent(NoteEvent.SetId(0))
                         onEvent(NoteEvent.SetTitre(""))
                         onEvent(NoteEvent.SetBody(""))
@@ -165,6 +165,7 @@ fun Note(note: Note,
                                         selected = state.couleur == couleur,
                                         onClick = {
                                             onEvent(NoteEvent.SetColor(couleur))
+                                            onEvent(NoteEvent.SaveNote)
                                             onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
                                         }
                                     )
@@ -193,6 +194,7 @@ fun StyledTextFielTitre(
         value = titre,
         onValueChange = {
             onEvent(NoteEvent.SetTitre(it))
+            onEvent(NoteEvent.SaveNote)
             onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
         },
         colors = TextFieldDefaults.colors(
@@ -222,6 +224,7 @@ fun StyledTextFieldBody(
         value = body,
         onValueChange = {
             onEvent(NoteEvent.SetBody(it))
+            onEvent(NoteEvent.SaveNote)
             onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
         },
         colors = TextFieldDefaults.colors(
