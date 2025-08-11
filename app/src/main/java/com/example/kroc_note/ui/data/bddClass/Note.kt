@@ -12,8 +12,8 @@ data class Note(
     val titre: String,
     val body: String,
     val couleur: CouleurNote,
-    val dateDerniereModification: Long,//ZonedDateTime,
-    val dateCreation: Long, //ZonedDateTime,
+    val dateDerniereModification: Long,
+    val dateCreation: Long,
 )
 
 

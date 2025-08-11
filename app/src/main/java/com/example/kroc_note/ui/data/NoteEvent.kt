@@ -1,15 +1,19 @@
 package com.example.kroc_note.ui.data
 
 import com.example.kroc_note.ui.data.bddClass.Note
+import com.example.kroc_note.ui.data.type.CouleurNote
 import com.example.kroc_note.ui.data.type.SortType
 
 sealed interface NoteEvent {
-    object SaveNote: NoteEvent
-    data class  SetId(val idNote: Int): NoteEvent
+    //setteur
+    data class SetId(val idNote: Int): NoteEvent
     data class SetTitre(val titre: String): NoteEvent
+    data class SetBody(val body: String): NoteEvent
+    data class SetColor(val couleur: CouleurNote): NoteEvent
     data class SetDateCreation(val dateCreation: Long): NoteEvent
     data class SetDateModification(val dateModification: Long): NoteEvent
-    data class SetBody(val body: String): NoteEvent
+
+    object SaveNote: NoteEvent
     data class SortNote(val sortType: SortType): NoteEvent
     data class DeleteNote(val note: Note): NoteEvent
     data class DeleteManyNoteById(val ids: List<Int>): NoteEvent

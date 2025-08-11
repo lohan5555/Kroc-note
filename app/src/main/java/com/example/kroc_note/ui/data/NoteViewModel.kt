@@ -98,6 +98,11 @@ class NoteViewModel(
                     body = event.body
                 ) }
             }
+            is NoteEvent.SetColor -> {
+                _state.update { it.copy(
+                    couleur = event.couleur
+                ) }
+            }
             is NoteEvent.SetDateCreation -> {
                 _state.update { it.copy(
                     dateCreation = event.dateCreation
