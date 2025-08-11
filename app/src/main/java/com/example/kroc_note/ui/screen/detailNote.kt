@@ -1,12 +1,10 @@
 package com.example.kroc_note.ui.screen
 
-import android.graphics.Paint.Style
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
@@ -20,10 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -33,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.type.CouleurNote
-import com.example.kroc_note.ui.data.type.SortType
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -91,7 +84,7 @@ fun DetailScreen(
             if (note == null){
                 Text("Note introuvable", style = MaterialTheme.typography.headlineMedium)
             }else{
-                Note(note, state, onEvent, navController)
+                Note(note, state, onEvent)
             }
         }
     }
@@ -99,7 +92,9 @@ fun DetailScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Note(note: Note, state: NoteState, onEvent: (NoteEvent) -> Unit, navController: NavController){
+fun Note(note: Note,
+         state: NoteState,
+         onEvent: (NoteEvent) -> Unit){
     val couleurAffichage: Color = state.couleur.color
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
@@ -125,7 +120,6 @@ fun Note(note: Note, state: NoteState, onEvent: (NoteEvent) -> Unit, navControll
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LazyColumn(
-                //modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ){
                 item{
@@ -157,10 +151,6 @@ fun Note(note: Note, state: NoteState, onEvent: (NoteEvent) -> Unit, navControll
                                         onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
                                     }
                                 )
-                                /*Text(
-                                    text = couleur.name,
-                                    style = TextStyle(color = MaterialTheme.colorScheme.onPrimary)
-                                )*/
                             }
                         }
                     }

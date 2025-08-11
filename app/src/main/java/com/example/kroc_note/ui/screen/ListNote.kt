@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,9 +40,7 @@ import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
@@ -58,9 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kroc_note.ui.data.type.SortType
-import kotlinx.coroutines.selects.select
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +68,6 @@ fun NoteScreen(
 ){
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
-    //onEvent(NoteEvent.SortNote(SortType.CREATION))
 
     Scaffold(
         topBar = {
@@ -167,7 +161,6 @@ fun NoteScreen(
             Column(){
                 if(recherche){
                     LazyColumn(
-                        //modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ){
                         item{
@@ -249,23 +242,6 @@ fun ListNoteCard(
         }
     }
 }
-
-/*
-@Preview
-@Composable
-fun PreviewListNoteCard(){
-    val navController = rememberNavController()
-    val paddingValues = PaddingValues()
-    val notes = listOf(
-        Note(1, "Note 1", "Contenu 1", CouleurNote.Rose, LocalDateTime.now()),
-        Note(2, "Note 2", "Contenu 2", CouleurNote.Rose),
-        Note(3, "Note 3", "Contenu 3", CouleurNote.Rose),
-        Note(4, "Note 4", "Contenu 4", CouleurNote.Rose),
-        Note(5, "Note 5", "Contenu 5", CouleurNote.Rose),
-    )
-    ListNoteCard(notes, paddingValues, navController)
-}*/
-
 
 @Composable
 fun NoteCard(

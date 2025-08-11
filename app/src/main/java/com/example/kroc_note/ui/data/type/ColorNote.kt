@@ -8,6 +8,8 @@ import com.example.kroc_note.ui.theme.Purple80
 import com.example.kroc_note.ui.theme.PurpleGrey40
 import com.example.kroc_note.ui.theme.PurpleGrey80
 
+
+//liste des couleurs possible pour une note
 enum class CouleurNote(val color: Color) {
     Violet(Purple80),
     Gris(PurpleGrey80),
