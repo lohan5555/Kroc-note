@@ -184,7 +184,7 @@ fun NoteScreen(
                                                 onEvent(NoteEvent.SortNote(sortType))
                                             }
                                         )
-                                        Text(text = sortType.name)
+                                        Text(text = matchText(sortType.name))
                                     }
                                 }
                             }
@@ -205,6 +205,17 @@ fun NoteScreen(
                 )
             }
         }
+    }
+}
+
+fun matchText(sort: String):String{
+    return when (sort) {
+        "RECENTE" -> "Récente"
+        "ANCIENNE" -> "Ancienne"
+        "A_Z" -> "A à Z"
+        "Z_A" -> "Z à A"
+        "MODIF_RECENTE" -> "Modification recente"
+        else -> sort
     }
 }
 

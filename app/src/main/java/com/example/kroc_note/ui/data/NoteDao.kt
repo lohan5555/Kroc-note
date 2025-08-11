@@ -30,7 +30,7 @@ interface NoteDao {
     @Query("SELECT * FROM note ORDER BY dateCreation ASC")
     fun getAllNotesByDateCreationASC(): Flow<List<Note>>
 
-    @Query("SELECT * FROM note ORDER BY dateDerniereModification ASC")
+    @Query("SELECT * FROM note ORDER BY dateDerniereModification DESC")
     fun getAllNotesByDateModif(): Flow<List<Note>>
 }
 
