@@ -40,21 +40,29 @@ import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import com.example.kroc_note.ui.data.type.SortType
 
 
@@ -68,6 +76,7 @@ fun NoteScreen(
 ){
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
+    var filtre by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -160,31 +169,54 @@ fun NoteScreen(
         ) {
             Column(){
                 if(recherche){
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ){
-                        item{
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .horizontalScroll(rememberScrollState()),
-                                verticalAlignment = CenterVertically
-                            ) {
-                                SortType.entries.forEach { sortType ->
-                                    Row(
-                                        modifier = Modifier
-                                            .clickable {
-                                                onEvent(NoteEvent.SortNote(sortType))
-                                            },
-                                        verticalAlignment = CenterVertically
-                                    ) {
-                                        RadioButton(
-                                            selected = state.sortType == sortType,
-                                            onClick = {
-                                                onEvent(NoteEvent.SortNote(sortType))
-                                            }
-                                        )
-                                        Text(text = matchText(sortType.name))
+                    Column {
+
+                        Row(modifier = Modifier.padding(start = 10.dp)) {
+                            TextField(
+                                value = filtre,
+                                onValueChange = {
+                                    filtre = it
+                                    println(filtre)
+                                },
+                                placeholder = { Text("\uD83D\uDD0D Rechercher") },
+                            )
+                            IconButton(onClick = { filtre = "" }){
+                                Icon(Icons.Default.Close, contentDescription = "reset la zone de saisie")
+                            }
+                            IconButton(
+                                modifier = Modifier.padding(start = 20.dp),
+                                onClick = { recherche = false }
+                            ){
+                                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "ferme le menu des filtres")
+                            }
+                        }
+
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ){
+                            item{
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .horizontalScroll(rememberScrollState()),
+                                    verticalAlignment = CenterVertically
+                                ) {
+                                    SortType.entries.forEach { sortType ->
+                                        Row(
+                                            modifier = Modifier
+                                                .clickable {
+                                                    onEvent(NoteEvent.SortNote(sortType))
+                                                },
+                                            verticalAlignment = CenterVertically
+                                        ) {
+                                            RadioButton(
+                                                selected = state.sortType == sortType,
+                                                onClick = {
+                                                    onEvent(NoteEvent.SortNote(sortType))
+                                                }
+                                            )
+                                            Text(text = matchText(sortType.name))
+                                        }
                                     }
                                 }
                             }
@@ -195,6 +227,7 @@ fun NoteScreen(
                     notes = state.notes,
                     navController = navController,
                     noteSelect = noteSelect,
+                    filtre = filtre,
                     onToggleSelection = { id ->
                         noteSelect = if (noteSelect.contains(id)){
                             noteSelect - id
@@ -224,9 +257,12 @@ fun ListNoteCard(
     notes: List<Note>,
     navController: NavController,
     noteSelect: Set<Int>,
+    filtre: String,
     onToggleSelection: (Int) -> Unit
 ) {
-    if (notes.isEmpty()) {
+
+    var notesFilter = filtreNotes(notes, filtre)
+    if (notesFilter.isEmpty()) {
         Box(
             modifier = Modifier
                 .fillMaxSize(),
@@ -241,7 +277,7 @@ fun ListNoteCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(notes) { note ->
+            items(notesFilter) { note ->
                 NoteCard(
                     note = note,
                     navController = navController,
@@ -253,6 +289,18 @@ fun ListNoteCard(
         }
     }
 }
+
+fun filtreNotes(notes: List<Note>, filtre: String): List<Note> {
+    return if (filtre.isBlank()) {
+        notes
+    } else {
+        notes.filter { note ->
+            note.titre.contains(filtre, ignoreCase = true)
+        }
+    }
+}
+
+
 
 @Composable
 fun NoteCard(
