@@ -100,7 +100,7 @@ fun DetailScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Note(note: Note, state: NoteState, onEvent: (NoteEvent) -> Unit, navController: NavController){
-    val couleurAffichage: Color = note.couleur.color
+    val couleurAffichage: Color = state.couleur.color
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
     val dateCreation = Instant.ofEpochMilli(note.dateCreation)
