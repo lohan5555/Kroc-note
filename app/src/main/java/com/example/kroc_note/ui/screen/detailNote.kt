@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,6 +63,24 @@ fun DetailScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
                     }
                 },
+                actions = {
+                    Icon(Icons.Default.Share, contentDescription = "partager")
+                    IconButton(onClick = {
+                        if(note != null){
+                            onEvent(NoteEvent.DeleteNote(note))
+                        }
+                        navController.popBackStack()
+                        onEvent(NoteEvent.SetId(0))
+                        onEvent(NoteEvent.SetTitre(""))
+                        onEvent(NoteEvent.SetBody(""))
+                        onEvent(NoteEvent.SetColor(CouleurNote.Violet))
+                        onEvent(NoteEvent.SetDateCreation(System.currentTimeMillis()))
+                        onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
+
+                    }) {
+                        Icon(Icons.Default.Delete, contentDescription = "supprimer")
+                    }
+                }
             )
         }
     ) { padding ->

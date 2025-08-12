@@ -184,7 +184,6 @@ fun NoteScreen(
                                 Icon(Icons.Default.Close, contentDescription = "reset la zone de saisie")
                             }
                             IconButton(
-                                modifier = Modifier.padding(start = 20.dp),
                                 onClick = { recherche = false }
                             ){
                                 Icon(Icons.Default.KeyboardArrowUp, contentDescription = "ferme le menu des filtres")
