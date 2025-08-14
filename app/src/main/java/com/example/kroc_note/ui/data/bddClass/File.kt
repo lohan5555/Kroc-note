@@ -7,14 +7,11 @@ import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
-data class Note(
+data class File(
     @PrimaryKey(autoGenerate = true) val idNote: Int = 0,
-    val titre: String,
-    val body: String,
-    val couleur: CouleurNote,
-    val dateDerniereModification: Long,
-    val dateCreation: Long,
-    val path: String
+    val name: String,
+    val path: String,
+    val color: CouleurNote
 )
 
 

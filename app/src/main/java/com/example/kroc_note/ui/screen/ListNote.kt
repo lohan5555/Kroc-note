@@ -70,10 +70,14 @@ import com.example.kroc_note.ui.data.type.SortType
 @Composable
 fun NoteScreen(
     state: NoteState,
+    path: String,
     onEvent: (NoteEvent) -> Unit,
     navController: NavController,
     onToggleTheme: () -> Unit
 ){
+    //on ne garde que les notes qui ont le bon chemin
+    val notes = state.notes.filter { it.path == path }
+
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
     var filtre by remember { mutableStateOf("") }
@@ -223,7 +227,7 @@ fun NoteScreen(
                     }
                 }
                 ListNoteCard(
-                    notes = state.notes,
+                    notes = notes,
                     navController = navController,
                     noteSelect = noteSelect,
                     filtre = filtre,

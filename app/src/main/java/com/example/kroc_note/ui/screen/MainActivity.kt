@@ -73,7 +73,8 @@ class MainActivity : ComponentActivity() {
                             state = state,
                             onEvent = viewModel::onEvent,
                             navController = navController,
-                            onToggleTheme = { themeViewModel.toggleTheme() }
+                            onToggleTheme = { themeViewModel.toggleTheme() },
+                            path = "home/"
                         )
                     }
                     composable(

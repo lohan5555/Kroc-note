@@ -1,11 +1,11 @@
-package com.example.kroc_note.ui.data
+package com.example.kroc_note.ui.data.dao
 
 import androidx.room.*
 import com.example.kroc_note.ui.data.bddClass.Note
 import kotlinx.coroutines.flow.Flow
 
 //dao: data acces object
-//toute les fonctions qui vont venir modifier notre bdd
+//toute les fonctions qui vont venir modifier notre table Note
 @Dao
 interface NoteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

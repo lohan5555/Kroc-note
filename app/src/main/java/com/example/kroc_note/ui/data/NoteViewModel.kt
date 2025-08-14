@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kroc_note.ui.data.bddClass.Note
+import com.example.kroc_note.ui.data.dao.NoteDao
 import com.example.kroc_note.ui.data.type.SortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,6 +53,7 @@ class NoteViewModel(
                 val couleur = state.value.couleur
                 val dateDerniereModification = state.value.dateDerniereModification
                 val dateCreation = state.value.dateCreation
+                val path = state.value.path
 
                 if(titre.isBlank()){  //une note doit avoir au moins un titre
                     return
@@ -63,7 +65,8 @@ class NoteViewModel(
                     body = body,
                     couleur = couleur,
                     dateDerniereModification = dateDerniereModification,
-                    dateCreation = dateCreation
+                    dateCreation = dateCreation,
+                    path = path
                 )
                 viewModelScope.launch {
                     dao.upsert(note)

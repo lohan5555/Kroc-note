@@ -14,5 +14,7 @@ data class NoteState(
     val couleur: CouleurNote = CouleurNote.Violet,
     val dateDerniereModification: Long = System.currentTimeMillis(),
     val dateCreation: Long = System.currentTimeMillis(),
+    val path: String = "home/",
+
     val sortType: SortType = SortType.RECENTE
 )
