@@ -53,6 +53,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +64,9 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.kroc_note.ui.data.FileState
+import com.example.kroc_note.ui.data.bddClass.File
 import com.example.kroc_note.ui.data.type.SortType
 
 
@@ -70,6 +74,7 @@ import com.example.kroc_note.ui.data.type.SortType
 @Composable
 fun NoteScreen(
     state: NoteState,
+    stateFile: FileState,
     path: String,
     onEvent: (NoteEvent) -> Unit,
     navController: NavController,
@@ -77,6 +82,9 @@ fun NoteScreen(
 ){
     //on ne garde que les notes qui ont le bon chemin
     val notes = state.notes.filter { it.path == path }
+    val files = stateFile.files
+    println(notes)
+    println(files)
 
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
@@ -226,6 +234,11 @@ fun NoteScreen(
                         }
                     }
                 }
+                ListFileCard(
+                    files = files,
+                    noteSelect = noteSelect,
+                    navController = navController
+                )
                 ListNoteCard(
                     notes = notes,
                     navController = navController,
@@ -293,6 +306,30 @@ fun ListNoteCard(
     }
 }
 
+@Composable
+fun ListFileCard(
+    files: List<File>,
+    navController: NavController,
+    noteSelect: Set<Int>,
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(files) { file ->
+            FileCard(
+                file = file,
+                navController = navController,
+                isSelected = noteSelect.contains(file.idFile),
+                selectedNote = noteSelect
+            )
+        }
+    }
+
+}
+
 fun filtreNotes(notes: List<Note>, filtre: String): List<Note> {
     return if (filtre.isBlank()) {
         notes
@@ -355,6 +392,35 @@ fun NoteCard(
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+fun FileCard(
+    file: File,
+    navController: NavController,
+    isSelected: Boolean,
+    selectedNote: Set<Int>
+){
+    val couleurAffichage: Color = file.color.color
+    val borderColor = if (isSelected) MaterialTheme.colorScheme.surfaceBright else Color.Transparent
+
+    Box(modifier = Modifier
+        .padding(8.dp)
+        .size(200.dp)
+        .clip(RoundedCornerShape(16.dp))
+        .background(couleurAffichage)
+        .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(16.dp))
+    ){
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize()
+        ) {
+            Text(text = file.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, maxLines = 1)
+            Text(text = file.path + file.name, color = MaterialTheme.colorScheme.onPrimary, maxLines = 4)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.kroc_note.ui.screen
 
+import FileViewModel
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.runtime.collectAsState
@@ -36,11 +38,21 @@ class MainActivity : ComponentActivity() {
             .fallbackToDestructiveMigration(true)  //pour détruire et recreer la bdd quand elle est modifier (bien prod, pas en déploiment)
             .build()
     }
-    private val viewModel by viewModels<NoteViewModel>(
+    private val noteViewModel by viewModels<NoteViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory{
                 override fun <T: ViewModel> create(modelClass: Class<T>): T{
                     return NoteViewModel(db.noteDao()) as T
+                }
+            }
+        }
+    )
+
+    private val fileViewModel: FileViewModel by viewModels(
+        factoryProducer = {
+            object : ViewModelProvider.Factory{
+                override fun <T: ViewModel> create(modelClass: Class<T>): T{
+                    return FileViewModel(db.fileDao()) as T
                 }
             }
         }
@@ -65,13 +77,19 @@ class MainActivity : ComponentActivity() {
                 dynamicColor = false //pour pouvoir utiliser mes propre couleur
             ) {
                 val navController = rememberNavController()
-                val state by viewModel.state.collectAsState()
+                val stateNote by noteViewModel.state.collectAsState()
+                val stateFile by fileViewModel.state.collectAsState()
+
+                LaunchedEffect(Unit) {
+                    fileViewModel.chargerDossiers()
+                }
 
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
                         NoteScreen(
-                            state = state,
-                            onEvent = viewModel::onEvent,
+                            state = stateNote,
+                            stateFile = stateFile,
+                            onEvent = noteViewModel::onEvent,
                             navController = navController,
                             onToggleTheme = { themeViewModel.toggleTheme() },
                             path = "home/"
@@ -85,8 +103,8 @@ class MainActivity : ComponentActivity() {
                         DetailScreen(
                             navController = navController,
                             id = id,
-                            state = state,
-                            onEvent = viewModel::onEvent
+                            state = stateNote,
+                            onEvent = noteViewModel::onEvent
                         )
                     }
                 }

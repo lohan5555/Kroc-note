@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 
 @Entity
 data class File(
-    @PrimaryKey(autoGenerate = true) val idNote: Int = 0,
+    @PrimaryKey(autoGenerate = true) val idFile: Int = 0,
     val name: String,
     val path: String,
     val color: CouleurNote
