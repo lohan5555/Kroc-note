@@ -145,21 +145,46 @@ fun NoteScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                onEvent(NoteEvent.SetTitre("nouvelle note"))
-                onEvent(NoteEvent.SetBody(""))
-                onEvent(NoteEvent.SetDateCreation(System.currentTimeMillis()))
-                onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
-                onEvent(NoteEvent.SaveNote)
+            var expandedAdd by remember { mutableStateOf(false) }
+            Box{
+                FloatingActionButton(
+                    onClick = { expandedAdd = true
+                        println(expandedAdd)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "add note")
+                }
 
 
-                //var newId = 0
-                //println("newId: $newId")  //je n'arrive pas à récuperer le nouvel id
-                //navController.navigate("Detail/$newId")
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "add note")
+                DropdownMenu(
+                    expanded = expandedAdd,
+                    onDismissRequest = { expandedAdd = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Créer une note") },
+                        onClick = {
+                            expandedAdd = false
+                            onEvent(NoteEvent.SetTitre("nouvelle note"))
+                            onEvent(NoteEvent.SetBody(""))
+                            onEvent(NoteEvent.SetDateCreation(System.currentTimeMillis()))
+                            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
+                            onEvent(NoteEvent.SaveNote)
+
+                            //var newId = 0
+                            //println("newId: $newId")  //je n'arrive pas à récuperer le nouvel id
+                            //navController.navigate("Detail/$newId")
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Créer un dossier") },
+                        onClick = {
+                            expandedAdd = false
+                        }
+                    )
+
+                }
             }
         },
         modifier = Modifier
@@ -416,8 +441,6 @@ fun FolderCard(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-
-            //Text(text = folder.path + folder.name, color = MaterialTheme.colorScheme.onPrimary, maxLines = 4)
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
