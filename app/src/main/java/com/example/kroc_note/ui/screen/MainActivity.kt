@@ -1,6 +1,7 @@
 package com.example.kroc_note.ui.screen
 
 import FolderViewModel
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -80,8 +81,13 @@ class MainActivity : ComponentActivity() {
                 val stateNote by noteViewModel.state.collectAsState()
                 val stateFolder by folderViewModel.state.collectAsState()
 
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home") {
+                NavHost(navController = navController,startDestination = "NoteScreen/${Uri.encode("home")}"
+                ) {
+                    composable(
+                        "NoteScreen/{path}",
+                        arguments = listOf(navArgument("path"){type = NavType.StringType})
+                    ) { backStackEntry ->
+                        val path = backStackEntry.arguments?.getString("path") ?: ""
                         NoteScreen(
                             state = stateNote,
                             stateFolder = stateFolder,
@@ -89,7 +95,7 @@ class MainActivity : ComponentActivity() {
                             onEventFolder = folderViewModel::onEvent,
                             navController = navController,
                             onToggleTheme = { themeViewModel.toggleTheme() },
-                            path = "home/",
+                            path = path,
                             isDark = isDarkTheme
                         )
                     }

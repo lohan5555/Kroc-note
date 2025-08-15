@@ -1,6 +1,7 @@
 package com.example.kroc_note.ui.screen
 
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -84,10 +85,11 @@ fun NoteScreen(
     onToggleTheme: () -> Unit,
     isDark: Boolean
 ){
-    //on ne garde que les notes qui ont le bon chemin
+
+    println("path $path")
+    //on ne garde que les notes et les dossiers qui ont le bon chemin
     val notes = state.notes.filter { it.path == path }
-    val folders = stateFolder.folders
-    println(notes)
+    val folders = stateFolder.folders.filter { it.path == path }
 
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
@@ -280,7 +282,8 @@ fun NoteScreen(
                             noteSelect + id
                         }
                     },
-                    isDark = isDark
+                    isDark = isDark,
+                    path = path
                 )
             }
         }
@@ -312,7 +315,8 @@ fun ListItemCard(
     noteSelect: Set<Int>,
     filtre: String,
     onToggleSelection: (Int) -> Unit,
-    isDark: Boolean
+    isDark: Boolean,
+    path: String
 ) {
 
     val notesFilter = filtreNotes(notes, filtre)
@@ -346,6 +350,7 @@ fun ListItemCard(
                     )
                     is ItemUI.FolderItem -> FolderCard(
                         folder = item.folder,
+                        path = path,
                         navController = navController,
                         isSelected = noteSelect.contains(item.folder.idFolder),
                         selectedNote = noteSelect,
@@ -358,6 +363,7 @@ fun ListItemCard(
     }
 }
 
+//pour la barre de recherche
 fun filtreNotes(notes: List<Note>, filtre: String): List<Note> {
     return if (filtre.isBlank()) {
         notes
@@ -428,6 +434,7 @@ fun NoteCard(
 @Composable
 fun FolderCard(
     folder: Folder,
+    path: String,
     navController: NavController,
     isSelected: Boolean,
     selectedNote: Set<Int>,
@@ -442,31 +449,36 @@ fun FolderCard(
         .clip(RoundedCornerShape(16.dp))
         .background(couleurAffichage)
         .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(16.dp))
+        .pointerInput(selectedNote) {
+            detectTapGestures(
+                onTap = {
+                    navController.navigate("NoteScreen/${Uri.encode(path + "/" + folder.name)}")
+
+                },
+            )
+        }
     ){
         Column(
             modifier = Modifier
-                .padding(16.dp)
                 .fillMaxSize()
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
-                if(isDark){
-                    Image(
-                        painter = painterResource(id = R.drawable.folder_fonce),
-                        contentDescription = ("img folder foncé")
-                    )
-                }else{
-                    Image(
-                        painter = painterResource(id = R.drawable.folder_claire),
-                        contentDescription = ("img folder clair")
-                    )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(text = folder.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, maxLines = 1)
+                .padding(16.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            if(isDark){
+                Image(
+                    painter = painterResource(id = R.drawable.folder_fonce),
+                    contentDescription = ("img folder foncé")
+                )
+            }else{
+                Image(
+                    painter = painterResource(id = R.drawable.folder_claire),
+                    contentDescription = ("img folder clair")
+                )
             }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = folder.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, maxLines = 1)
         }
     }
 }

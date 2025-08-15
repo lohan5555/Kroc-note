@@ -11,5 +11,5 @@ data class FolderState(
     val couleur: CouleurNote = CouleurNote.Violet,
     val dateCreation: Long = System.currentTimeMillis(),
     val dateModification: Long = System.currentTimeMillis(),
-    val path: String = "home/",
+    val path: String = "home",
 )
