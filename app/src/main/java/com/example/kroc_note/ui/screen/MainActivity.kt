@@ -1,6 +1,6 @@
 package com.example.kroc_note.ui.screen
 
-import FileViewModel
+import FolderViewModel
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -48,11 +48,11 @@ class MainActivity : ComponentActivity() {
         }
     )
 
-    private val fileViewModel: FileViewModel by viewModels(
+    private val folderViewModel: FolderViewModel by viewModels(
         factoryProducer = {
             object : ViewModelProvider.Factory{
                 override fun <T: ViewModel> create(modelClass: Class<T>): T{
-                    return FileViewModel(db.fileDao()) as T
+                    return FolderViewModel(db.folderDao()) as T
                 }
             }
         }
@@ -78,17 +78,17 @@ class MainActivity : ComponentActivity() {
             ) {
                 val navController = rememberNavController()
                 val stateNote by noteViewModel.state.collectAsState()
-                val stateFile by fileViewModel.state.collectAsState()
+                val stateFolder by folderViewModel.state.collectAsState()
 
                 LaunchedEffect(Unit) {
-                    fileViewModel.chargerDossiers()
+                    folderViewModel.chargerDossiers()
                 }
 
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
                         NoteScreen(
                             state = stateNote,
-                            stateFile = stateFile,
+                            stateFolder = stateFolder,
                             onEvent = noteViewModel::onEvent,
                             navController = navController,
                             onToggleTheme = { themeViewModel.toggleTheme() },

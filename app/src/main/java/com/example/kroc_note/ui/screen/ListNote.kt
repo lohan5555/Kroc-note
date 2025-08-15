@@ -40,33 +40,26 @@ import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.kroc_note.ui.data.FileState
-import com.example.kroc_note.ui.data.bddClass.File
+import com.example.kroc_note.ui.data.FolderState
+import com.example.kroc_note.ui.data.bddClass.Folder
 import com.example.kroc_note.ui.data.type.SortType
 
 
@@ -74,7 +67,7 @@ import com.example.kroc_note.ui.data.type.SortType
 @Composable
 fun NoteScreen(
     state: NoteState,
-    stateFile: FileState,
+    stateFolder: FolderState,
     path: String,
     onEvent: (NoteEvent) -> Unit,
     navController: NavController,
@@ -82,9 +75,8 @@ fun NoteScreen(
 ){
     //on ne garde que les notes qui ont le bon chemin
     val notes = state.notes.filter { it.path == path }
-    val files = stateFile.files
+    val folders = stateFolder.folders
     println(notes)
-    println(files)
 
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
@@ -236,7 +228,7 @@ fun NoteScreen(
                 }
                 ListItemCard(
                     notes = notes,
-                    files = files,
+                    folders = folders,
                     navController = navController,
                     noteSelect = noteSelect,
                     filtre = filtre,
@@ -264,16 +256,16 @@ fun matchText(sort: String):String{
     }
 }
 
-//type scellé pour pouvoir creer une liste de File et de Note
+//type scellé pour pouvoir creer une liste de Folder et de Note
 sealed class ItemUI {
     data class NoteItem(val note: Note) : ItemUI()
-    data class FileItem(val file: File) : ItemUI()
+    data class FolderItem(val folder: Folder) : ItemUI()
 }
 
 @Composable
 fun ListItemCard(
     notes: List<Note>,
-    files: List<File>,
+    folders: List<Folder>,
     navController: NavController,
     noteSelect: Set<Int>,
     filtre: String,
@@ -283,7 +275,7 @@ fun ListItemCard(
     val notesFilter = filtreNotes(notes, filtre)
 
     val combinedList: List<ItemUI> =
-        (files.map { ItemUI.FileItem(it) } + notesFilter.map { ItemUI.NoteItem(it) })
+        (folders.map { ItemUI.FolderItem(it) } + notesFilter.map { ItemUI.NoteItem(it) })
 
     if (combinedList.isEmpty()) {
         Box(
@@ -309,10 +301,10 @@ fun ListItemCard(
                         onToggleSelection = onToggleSelection,
                         selectedNote = noteSelect
                     )
-                    is ItemUI.FileItem -> FileCard(
-                        file = item.file,
+                    is ItemUI.FolderItem -> FolderCard(
+                        folder = item.folder,
                         navController = navController,
-                        isSelected = noteSelect.contains(item.file.idFile),
+                        isSelected = noteSelect.contains(item.folder.idFolder),
                         selectedNote = noteSelect
                     )
                 }
@@ -390,13 +382,13 @@ fun NoteCard(
 
 
 @Composable
-fun FileCard(
-    file: File,
+fun FolderCard(
+    folder: Folder,
     navController: NavController,
     isSelected: Boolean,
     selectedNote: Set<Int>
 ){
-    val couleurAffichage: Color = file.color.color
+    val couleurAffichage: Color = folder.color.color
     val borderColor = if (isSelected) MaterialTheme.colorScheme.surfaceBright else Color.Transparent
 
     Box(modifier = Modifier
@@ -411,8 +403,8 @@ fun FileCard(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Text(text = file.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, maxLines = 1)
-            Text(text = file.path + file.name, color = MaterialTheme.colorScheme.onPrimary, maxLines = 4)
+            Text(text = folder.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, maxLines = 1)
+            Text(text = folder.path + folder.name, color = MaterialTheme.colorScheme.onPrimary, maxLines = 4)
         }
     }
 }

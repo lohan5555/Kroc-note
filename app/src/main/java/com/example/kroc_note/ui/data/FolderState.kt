@@ -1,12 +1,12 @@
 package com.example.kroc_note.ui.data
 
-import com.example.kroc_note.ui.data.bddClass.File
+import com.example.kroc_note.ui.data.bddClass.Folder
 import com.example.kroc_note.ui.data.type.CouleurNote
 
-data class FileState(
-    val files: List<File> = emptyList(),
+data class FolderState(
+    val folders: List<Folder> = emptyList(),
 
-    val fileId:Int = 0,
+    val folderId:Int = 0,
     val titre:String = "",
     val couleur: CouleurNote = CouleurNote.Violet,
     val dateCreation: Long = System.currentTimeMillis(),
