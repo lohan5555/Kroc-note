@@ -152,7 +152,7 @@ fun NoteScreen(
                 onEvent(NoteEvent.SaveNote)
 
 
-                var newId = 0
+                //var newId = 0
                 //println("newId: $newId")  //je n'arrive pas à récuperer le nouvel id
                 //navController.navigate("Detail/$newId")
             }) {
@@ -234,13 +234,9 @@ fun NoteScreen(
                         }
                     }
                 }
-                ListFileCard(
-                    files = files,
-                    noteSelect = noteSelect,
-                    navController = navController
-                )
-                ListNoteCard(
+                ListItemCard(
                     notes = notes,
+                    files = files,
                     navController = navController,
                     noteSelect = noteSelect,
                     filtre = filtre,
@@ -268,17 +264,28 @@ fun matchText(sort: String):String{
     }
 }
 
+//type scellé pour pouvoir creer une liste de File et de Note
+sealed class ItemUI {
+    data class NoteItem(val note: Note) : ItemUI()
+    data class FileItem(val file: File) : ItemUI()
+}
+
 @Composable
-fun ListNoteCard(
+fun ListItemCard(
     notes: List<Note>,
+    files: List<File>,
     navController: NavController,
     noteSelect: Set<Int>,
     filtre: String,
     onToggleSelection: (Int) -> Unit
 ) {
 
-    var notesFilter = filtreNotes(notes, filtre)
-    if (notesFilter.isEmpty()) {
+    val notesFilter = filtreNotes(notes, filtre)
+
+    val combinedList: List<ItemUI> =
+        (files.map { ItemUI.FileItem(it) } + notesFilter.map { ItemUI.NoteItem(it) })
+
+    if (combinedList.isEmpty()) {
         Box(
             modifier = Modifier
                 .fillMaxSize(),
@@ -293,41 +300,26 @@ fun ListNoteCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(notesFilter) { note ->
-                NoteCard(
-                    note = note,
-                    navController = navController,
-                    isSelected = noteSelect.contains(note.idNote),
-                    onToggleSelection = onToggleSelection,
-                    selectedNote = noteSelect
-                )
+            items(combinedList) { item ->
+                when (item){
+                    is ItemUI.NoteItem -> NoteCard(
+                        note = item.note,
+                        navController = navController,
+                        isSelected = noteSelect.contains(item.note.idNote),
+                        onToggleSelection = onToggleSelection,
+                        selectedNote = noteSelect
+                    )
+                    is ItemUI.FileItem -> FileCard(
+                        file = item.file,
+                        navController = navController,
+                        isSelected = noteSelect.contains(item.file.idFile),
+                        selectedNote = noteSelect
+                    )
+                }
+
             }
         }
     }
-}
-
-@Composable
-fun ListFileCard(
-    files: List<File>,
-    navController: NavController,
-    noteSelect: Set<Int>,
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(files) { file ->
-            FileCard(
-                file = file,
-                navController = navController,
-                isSelected = noteSelect.contains(file.idFile),
-                selectedNote = noteSelect
-            )
-        }
-    }
-
 }
 
 fun filtreNotes(notes: List<Note>, filtre: String): List<Note> {

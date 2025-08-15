@@ -12,7 +12,7 @@ data class NoteState(
     val titre:String = "",
     val body:String = "",
     val couleur: CouleurNote = CouleurNote.Violet,
-    val dateDerniereModification: Long = System.currentTimeMillis(),
+    val dateModification: Long = System.currentTimeMillis(),
     val dateCreation: Long = System.currentTimeMillis(),
     val path: String = "home/",
 

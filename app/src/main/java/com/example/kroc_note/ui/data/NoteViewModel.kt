@@ -51,7 +51,7 @@ class NoteViewModel(
                 val titre = state.value.titre
                 val body = state.value.body
                 val couleur = state.value.couleur
-                val dateDerniereModification = state.value.dateDerniereModification
+                val dateModification = state.value.dateModification
                 val dateCreation = state.value.dateCreation
                 val path = state.value.path
 
@@ -64,7 +64,7 @@ class NoteViewModel(
                     titre = titre,
                     body = body,
                     couleur = couleur,
-                    dateDerniereModification = dateDerniereModification,
+                    dateModification = dateModification,
                     dateCreation = dateCreation,
                     path = path
                 )
@@ -113,7 +113,7 @@ class NoteViewModel(
             }
             is NoteEvent.SetDateModification -> {
                 _state.update { it.copy(
-                    dateDerniereModification = event.dateModification
+                    dateModification = event.dateModification
                 ) }
             }
             is NoteEvent.DeleteManyNoteById -> {

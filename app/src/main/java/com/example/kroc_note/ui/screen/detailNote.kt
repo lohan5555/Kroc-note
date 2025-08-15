@@ -98,7 +98,7 @@ fun DetailScreen(
                         onEvent(NoteEvent.SetBody(note.body))
                         onEvent(NoteEvent.SetColor(note.couleur))
                         onEvent(NoteEvent.SetDateCreation(note.dateCreation))
-                        onEvent(NoteEvent.SetDateModification(note.dateDerniereModification))
+                        onEvent(NoteEvent.SetDateModification(note.dateModification))
                     }
                 }
             }
@@ -125,7 +125,7 @@ fun Note(note: Note,
         .atZone(ZoneId.systemDefault())
         .format(dateFormatter)
 
-    val dateModification = Instant.ofEpochMilli(note.dateDerniereModification)
+    val dateModification = Instant.ofEpochMilli(note.dateModification)
         .atZone(ZoneId.systemDefault())
         .format(dateFormatter)
 
@@ -185,8 +185,8 @@ fun Note(note: Note,
                                         selected = state.couleur == couleur,
                                         onClick = {
                                             onEvent(NoteEvent.SetColor(couleur))
-                                            onEvent(NoteEvent.SaveNote)
                                             onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
+                                            onEvent(NoteEvent.SaveNote)
                                         }
                                     )
                                 }

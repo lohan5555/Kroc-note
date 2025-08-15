@@ -9,5 +9,7 @@ data class FileState(
     val fileId:Int = 0,
     val titre:String = "",
     val couleur: CouleurNote = CouleurNote.Violet,
+    val dateCreation: Long = System.currentTimeMillis(),
+    val dateModification: Long = System.currentTimeMillis(),
     val path: String = "home/",
 )

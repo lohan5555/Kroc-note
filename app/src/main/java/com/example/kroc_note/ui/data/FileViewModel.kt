@@ -30,6 +30,8 @@ class FileViewModel(
             dao.insert(File(
                 name = "Dossier",
                 color = CouleurNote.Violet,
+                dateCreation = System.currentTimeMillis(),
+                dateModification = System.currentTimeMillis(),
                 path = ""))
             chargerDossiers()
         }
