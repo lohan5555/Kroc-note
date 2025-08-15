@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
                             onEvent = noteViewModel::onEvent,
                             navController = navController,
                             onToggleTheme = { themeViewModel.toggleTheme() },
-                            path = "home/"
+                            path = "home/",
+                            isDark = isDarkTheme
                         )
                     }
                     composable(

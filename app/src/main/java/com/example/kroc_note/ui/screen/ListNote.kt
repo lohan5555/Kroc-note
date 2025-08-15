@@ -1,6 +1,7 @@
 package com.example.kroc_note.ui.screen
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,6 +41,8 @@ import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.filled.Close
@@ -51,6 +54,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,9 +62,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.example.kroc_note.R
 import com.example.kroc_note.ui.data.FolderState
 import com.example.kroc_note.ui.data.bddClass.Folder
 import com.example.kroc_note.ui.data.type.SortType
+import com.example.kroc_note.ui.theme.KrocNoteTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +79,8 @@ fun NoteScreen(
     path: String,
     onEvent: (NoteEvent) -> Unit,
     navController: NavController,
-    onToggleTheme: () -> Unit
+    onToggleTheme: () -> Unit,
+    isDark: Boolean
 ){
     //on ne garde que les notes qui ont le bon chemin
     val notes = state.notes.filter { it.path == path }
@@ -238,7 +247,8 @@ fun NoteScreen(
                         } else {
                             noteSelect + id
                         }
-                    }
+                    },
+                    isDark = isDark
                 )
             }
         }
@@ -269,7 +279,8 @@ fun ListItemCard(
     navController: NavController,
     noteSelect: Set<Int>,
     filtre: String,
-    onToggleSelection: (Int) -> Unit
+    onToggleSelection: (Int) -> Unit,
+    isDark: Boolean
 ) {
 
     val notesFilter = filtreNotes(notes, filtre)
@@ -305,7 +316,8 @@ fun ListItemCard(
                         folder = item.folder,
                         navController = navController,
                         isSelected = noteSelect.contains(item.folder.idFolder),
-                        selectedNote = noteSelect
+                        selectedNote = noteSelect,
+                        isDark = isDark
                     )
                 }
 
@@ -386,7 +398,8 @@ fun FolderCard(
     folder: Folder,
     navController: NavController,
     isSelected: Boolean,
-    selectedNote: Set<Int>
+    selectedNote: Set<Int>,
+    isDark: Boolean
 ){
     val couleurAffichage: Color = folder.color.color
     val borderColor = if (isSelected) MaterialTheme.colorScheme.surfaceBright else Color.Transparent
@@ -403,8 +416,27 @@ fun FolderCard(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Text(text = folder.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, maxLines = 1)
-            Text(text = folder.path + folder.name, color = MaterialTheme.colorScheme.onPrimary, maxLines = 4)
+
+            //Text(text = folder.path + folder.name, color = MaterialTheme.colorScheme.onPrimary, maxLines = 4)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                if(isDark){
+                    Image(
+                        painter = painterResource(id = R.drawable.folder_fonce),
+                        contentDescription = ("img folder foncé")
+                    )
+                }else{
+                    Image(
+                        painter = painterResource(id = R.drawable.folder_claire),
+                        contentDescription = ("img folder clair")
+                    )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = folder.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 20.sp, maxLines = 1)
+            }
         }
     }
 }
