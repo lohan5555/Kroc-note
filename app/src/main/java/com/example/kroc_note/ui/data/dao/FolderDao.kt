@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.kroc_note.ui.data.bddClass.Folder
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FolderDao {
@@ -15,5 +16,5 @@ interface FolderDao {
     suspend fun delete(folder: Folder)
 
     @Query("SELECT * FROM Folder")
-    suspend fun getAllDossiers(): List<Folder>
+    fun getAllDossiers(): Flow<List<Folder>>
 }

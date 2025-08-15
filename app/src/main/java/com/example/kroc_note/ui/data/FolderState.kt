@@ -7,7 +7,7 @@ data class FolderState(
     val folders: List<Folder> = emptyList(),
 
     val folderId:Int = 0,
-    val titre:String = "",
+    val name:String = "",
     val couleur: CouleurNote = CouleurNote.Violet,
     val dateCreation: Long = System.currentTimeMillis(),
     val dateModification: Long = System.currentTimeMillis(),

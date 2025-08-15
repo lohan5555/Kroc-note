@@ -80,16 +80,13 @@ class MainActivity : ComponentActivity() {
                 val stateNote by noteViewModel.state.collectAsState()
                 val stateFolder by folderViewModel.state.collectAsState()
 
-                LaunchedEffect(Unit) {
-                    folderViewModel.chargerDossiers()
-                }
-
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
                         NoteScreen(
                             state = stateNote,
                             stateFolder = stateFolder,
-                            onEvent = noteViewModel::onEvent,
+                            onEventNote = noteViewModel::onEvent,
+                            onEventFolder = folderViewModel::onEvent,
                             navController = navController,
                             onToggleTheme = { themeViewModel.toggleTheme() },
                             path = "home/",

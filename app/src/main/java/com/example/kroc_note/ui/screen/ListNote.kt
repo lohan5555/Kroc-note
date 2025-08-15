@@ -65,6 +65,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.kroc_note.R
+import com.example.kroc_note.ui.data.FolderEvent
 import com.example.kroc_note.ui.data.FolderState
 import com.example.kroc_note.ui.data.bddClass.Folder
 import com.example.kroc_note.ui.data.type.SortType
@@ -77,7 +78,8 @@ fun NoteScreen(
     state: NoteState,
     stateFolder: FolderState,
     path: String,
-    onEvent: (NoteEvent) -> Unit,
+    onEventNote: (NoteEvent) -> Unit,
+    onEventFolder: (FolderEvent) -> Unit,
     navController: NavController,
     onToggleTheme: () -> Unit,
     isDark: Boolean
@@ -135,7 +137,7 @@ fun NoteScreen(
                     }else{
                         Icon(Icons.Default.Share, contentDescription = "partager")
                         IconButton(onClick = {
-                            onEvent(NoteEvent.DeleteManyNoteById(noteSelect.toList()))
+                            onEventNote(NoteEvent.DeleteManyNoteById(noteSelect.toList()))
                             noteSelect = emptySet()
                         }) {
                             Icon(Icons.Default.Delete, contentDescription = "supprimer")
@@ -166,11 +168,11 @@ fun NoteScreen(
                         text = { Text("Créer une note") },
                         onClick = {
                             expandedAdd = false
-                            onEvent(NoteEvent.SetTitre("nouvelle note"))
-                            onEvent(NoteEvent.SetBody(""))
-                            onEvent(NoteEvent.SetDateCreation(System.currentTimeMillis()))
-                            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
-                            onEvent(NoteEvent.SaveNote)
+                            onEventNote(NoteEvent.SetTitre("nouvelle note"))
+                            onEventNote(NoteEvent.SetBody(""))
+                            onEventNote(NoteEvent.SetDateCreation(System.currentTimeMillis()))
+                            onEventNote(NoteEvent.SetDateModification(System.currentTimeMillis()))
+                            onEventNote(NoteEvent.SaveNote)
 
                             //var newId = 0
                             //println("newId: $newId")  //je n'arrive pas à récuperer le nouvel id
@@ -181,6 +183,11 @@ fun NoteScreen(
                         text = { Text("Créer un dossier") },
                         onClick = {
                             expandedAdd = false
+                            onEventFolder(FolderEvent.SetName("Dossier"))
+                            onEventFolder(FolderEvent.SetPath(path))
+                            onEventFolder(FolderEvent.SetDateCreation(System.currentTimeMillis()))
+                            onEventFolder(FolderEvent.SetDateModification(System.currentTimeMillis()))
+                            onEventFolder(FolderEvent.SaveFolder)
                         }
                     )
 
@@ -242,14 +249,14 @@ fun NoteScreen(
                                         Row(
                                             modifier = Modifier
                                                 .clickable {
-                                                    onEvent(NoteEvent.SortNote(sortType))
+                                                    onEventNote(NoteEvent.SortNote(sortType))
                                                 },
                                             verticalAlignment = CenterVertically
                                         ) {
                                             RadioButton(
                                                 selected = state.sortType == sortType,
                                                 onClick = {
-                                                    onEvent(NoteEvent.SortNote(sortType))
+                                                    onEventNote(NoteEvent.SortNote(sortType))
                                                 }
                                             )
                                             Text(text = matchText(sortType.name))
