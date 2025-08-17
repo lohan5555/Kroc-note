@@ -12,4 +12,5 @@ data class FolderState(
     val dateCreation: Long = System.currentTimeMillis(),
     val dateModification: Long = System.currentTimeMillis(),
     val path: String = "home",
+    val isEditFolder: Boolean = false
 )

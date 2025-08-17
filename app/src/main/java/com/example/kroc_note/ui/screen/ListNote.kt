@@ -50,6 +50,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
@@ -101,11 +102,11 @@ fun NoteScreen(
     Scaffold(
         topBar = {
             var expanded by remember { mutableStateOf(false) } //indique si le dropDownMenu est ouvert
-            var titreAppBar: String
+            val titreAppBar: String
             if(path == "home"){
                 titreAppBar = "Kroc-Note"
             }else{
-                titreAppBar = path.substringAfterLast('/') //TODO faire une fonction qui garde que la fin du path
+                titreAppBar = path.substringAfterLast('/')
             }
 
             TopAppBar(
@@ -126,6 +127,15 @@ fun NoteScreen(
                 },
                 actions = {
                     if(noteSelect.isEmpty()){
+                        if(path != "home"){
+                            IconButton(onClick = {
+                                println("edit folder")
+                                onEventFolder(FolderEvent.ShowDialog)
+                            }) {
+                                Icon(Icons.Default.Edit, contentDescription = "edit folder")
+                            }
+                        }
+
                         IconButton(onClick = {expanded = true}) {
                             Icon(Icons.Default.MoreVert, contentDescription = "Menu déroulant")
                         }
@@ -220,6 +230,10 @@ fun NoteScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ){ padding ->
+        if(stateFolder.isEditFolder){
+            println()
+            EditFolderDialog(path = path, state = stateFolder, onEvent = onEventFolder)
+        }
         Box(
             modifier = Modifier
                 .padding(padding)

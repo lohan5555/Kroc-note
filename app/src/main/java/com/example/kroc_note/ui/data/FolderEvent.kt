@@ -1,9 +1,7 @@
 package com.example.kroc_note.ui.data
 
 import com.example.kroc_note.ui.data.bddClass.Folder
-import com.example.kroc_note.ui.data.bddClass.Note
 import com.example.kroc_note.ui.data.type.CouleurNote
-import com.example.kroc_note.ui.data.type.SortType
 
 interface FolderEvent {
     //setteur
@@ -16,4 +14,7 @@ interface FolderEvent {
 
     object SaveFolder: FolderEvent
     data class DeleteFolder(val folder: Folder): FolderEvent
+
+    object ShowDialog: FolderEvent
+    object HideDialog: FolderEvent
 }

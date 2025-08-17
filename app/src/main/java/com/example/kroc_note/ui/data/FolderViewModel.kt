@@ -33,34 +33,28 @@ class FolderViewModel(
     fun onEvent(event: FolderEvent){
         when(event){
             FolderEvent.SaveFolder -> {
-                val idFolder = state.value.folderId
-                val name = state.value.name
-                val path = state.value.path
-                val couleur = state.value.couleur
-                val dateModification = state.value.dateModification
-                val dateCreation = state.value.dateCreation
-
-                if(name.isBlank() || path.isBlank()){
+                if(state.value.name.isBlank() || state.value.path.isBlank()){
                     return
                 }
 
-                val folder = Folder(
-                    idFolder = idFolder,
-                    name = name,
-                    color = couleur,
-                    dateModification = dateModification,
-                    dateCreation = dateCreation,
-                    path = path
-                )
                 viewModelScope.launch {
-                    dao.insert(folder)
+                    val folder = Folder(
+                        idFolder = state.value.folderId, // ⚡ important pour savoir si on update
+                        name = state.value.name,
+                        path = state.value.path,
+                        color = state.value.couleur,
+                        dateCreation = state.value.dateCreation,
+                        dateModification = state.value.dateModification
+                    )
+                    dao.upsert(folder)
                 }
-                if(idFolder == 0){
-                    _state.update { it.copy(
-                        name = "Dossier",
-                        path = path
-                    ) }
-                }
+                /*if(idFolder == 0){
+        _state.update { it.copy(
+            name = "Dossier",
+            path = path,
+            isEditFolder = false
+        ) }
+    }*/
             }
             is FolderEvent.DeleteFolder -> {
                 viewModelScope.launch {
@@ -96,6 +90,16 @@ class FolderViewModel(
             is FolderEvent.SetDateModification -> {
                 _state.update { it.copy(
                     dateModification = event.dateModification
+                ) }
+            }
+            FolderEvent.ShowDialog -> {
+                _state.update { it.copy(
+                    isEditFolder = true
+                ) }
+            }
+            FolderEvent.HideDialog -> {
+                _state.update { it.copy(
+                    isEditFolder = false
                 ) }
             }
         }
