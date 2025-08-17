@@ -52,7 +52,6 @@ fun DetailScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-                        //onEvent(NoteEvent.SaveNote)
                         onEvent(NoteEvent.SetId(0))
                         onEvent(NoteEvent.SetTitre(""))
                         onEvent(NoteEvent.SetBody(""))
@@ -121,6 +120,8 @@ fun Note(note: Note,
     val couleurAffichage: Color = state.couleur.color
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
+    onEvent(NoteEvent.SetPath(note.path))
+
     val dateCreation = Instant.ofEpochMilli(note.dateCreation)
         .atZone(ZoneId.systemDefault())
         .format(dateFormatter)
@@ -135,8 +136,8 @@ fun Note(note: Note,
             .background(couleurAffichage)
             .padding(16.dp)
     ) {
-        StyledTextFielTitre(state.titre, couleurAffichage, onEvent)
-        StyledTextFieldBody(state.body, couleurAffichage, onEvent, Modifier.weight(1f))
+        StyledTextFielTitre(couleurAffichage, onEvent, state)
+        StyledTextFieldBody(couleurAffichage, onEvent, Modifier.weight(1f), state)
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -184,9 +185,19 @@ fun Note(note: Note,
                                         ),
                                         selected = state.couleur == couleur,
                                         onClick = {
+                                            println("${note.path} path")
                                             onEvent(NoteEvent.SetColor(couleur))
-                                            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
-                                            onEvent(NoteEvent.SaveNote)
+                                            onEvent(
+                                                NoteEvent.UpdateNote(
+                                                    noteId = state.noteId,
+                                                    titre = state.titre,
+                                                    body = state.body,
+                                                    path = state.path,
+                                                    dateCreation = state.dateCreation,
+                                                    dateModification = System.currentTimeMillis(),
+                                                    couleur = couleur,
+                                                )
+                                            )
                                         }
                                     )
                                 }
@@ -205,17 +216,16 @@ fun Note(note: Note,
 
 @Composable
 fun StyledTextFielTitre(
-    titre: String,
     backgroundColor: Color,
-    onEvent: (NoteEvent) -> Unit
+    onEventNote: (NoteEvent) -> Unit,
+    state: NoteState
 ){
 
     TextField(
-        value = titre,
-        onValueChange = {
-            onEvent(NoteEvent.SetTitre(it))
-            onEvent(NoteEvent.SaveNote)
-            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
+        value = state.titre,
+        onValueChange = { newValue ->
+            onEventNote(NoteEvent.SetTitre(newValue))
+            onEventNote(NoteEvent.DebouncedSave)
         },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,
@@ -234,18 +244,17 @@ fun StyledTextFielTitre(
 
 @Composable
 fun StyledTextFieldBody(
-    body: String,
     backgroundColor: Color,
-    onEvent: (NoteEvent) -> Unit,
-    modifier: Modifier = Modifier
+    onEventNote: (NoteEvent) -> Unit,
+    modifier: Modifier = Modifier,
+    state: NoteState
 ) {
 
     TextField(
-        value = body,
-        onValueChange = {
-            onEvent(NoteEvent.SetBody(it))
-            onEvent(NoteEvent.SaveNote)
-            onEvent(NoteEvent.SetDateModification(System.currentTimeMillis()))
+        value = state.body,
+        onValueChange = { newValue ->
+            onEventNote(NoteEvent.SetBody(newValue))
+            onEventNote(NoteEvent.DebouncedSave)
         },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,

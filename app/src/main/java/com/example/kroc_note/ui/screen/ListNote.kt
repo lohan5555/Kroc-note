@@ -152,9 +152,7 @@ fun NoteScreen(
             var expandedAdd by remember { mutableStateOf(false) }
             Box{
                 FloatingActionButton(
-                    onClick = { expandedAdd = true
-                        println(expandedAdd)
-                    }
+                    onClick = { expandedAdd = true }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -170,11 +168,9 @@ fun NoteScreen(
                         text = { Text("Créer une note") },
                         onClick = {
                             expandedAdd = false
-                            onEventNote(NoteEvent.SetTitre("nouvelle note"))
-                            onEventNote(NoteEvent.SetBody(""))
-                            onEventNote(NoteEvent.SetDateCreation(System.currentTimeMillis()))
-                            onEventNote(NoteEvent.SetDateModification(System.currentTimeMillis()))
-                            onEventNote(NoteEvent.SaveNote)
+                            onEventNote(
+                                NoteEvent.CreateNote(path = path)
+                            )
 
                             //var newId = 0
                             //println("newId: $newId")  //je n'arrive pas à récuperer le nouvel id
@@ -343,6 +339,7 @@ fun ListItemCard(
                 when (item){
                     is ItemUI.NoteItem -> NoteCard(
                         note = item.note,
+                        path = path,
                         navController = navController,
                         isSelected = noteSelect.contains(item.note.idNote),
                         onToggleSelection = onToggleSelection,
@@ -380,6 +377,7 @@ fun filtreNotes(notes: List<Note>, filtre: String): List<Note> {
 fun NoteCard(
     note: Note,
     navController: NavController,
+    path: String,
     isSelected: Boolean,
     onToggleSelection: (Int) -> Unit,
     selectedNote: Set<Int>
@@ -453,7 +451,6 @@ fun FolderCard(
             detectTapGestures(
                 onTap = {
                     navController.navigate("NoteScreen/${Uri.encode(path + "/" + folder.name)}")
-
                 },
             )
         }

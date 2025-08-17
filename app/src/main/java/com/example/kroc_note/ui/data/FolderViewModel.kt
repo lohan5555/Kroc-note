@@ -58,7 +58,7 @@ class FolderViewModel(
                 if(idFolder == 0){
                     _state.update { it.copy(
                         name = "Dossier",
-                        path = "home/"
+                        path = path
                     ) }
                 }
             }
