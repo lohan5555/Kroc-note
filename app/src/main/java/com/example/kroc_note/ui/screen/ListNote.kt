@@ -46,6 +46,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -71,6 +73,8 @@ import com.example.kroc_note.ui.data.FolderState
 import com.example.kroc_note.ui.data.bddClass.Folder
 import com.example.kroc_note.ui.data.type.SortType
 import com.example.kroc_note.ui.theme.KrocNoteTheme
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +90,6 @@ fun NoteScreen(
     isDark: Boolean
 ){
 
-    println("path $path")
     //on ne garde que les notes et les dossiers qui ont le bon chemin
     val notes = state.notes.filter { it.path == path }
     val folders = stateFolder.folders.filter { it.path == path }
@@ -98,8 +101,29 @@ fun NoteScreen(
     Scaffold(
         topBar = {
             var expanded by remember { mutableStateOf(false) } //indique si le dropDownMenu est ouvert
+            var titreAppBar: String
+            if(path == "home"){
+                titreAppBar = "Kroc-Note"
+            }else{
+                titreAppBar = path.substringAfterLast('/') //TODO faire une fonction qui garde que la fin du path
+            }
+
             TopAppBar(
-                title = { Text("Kroc-Note") },
+                title = { Text(titreAppBar) },
+                navigationIcon = {
+                    if(path != "home"){
+                        IconButton(onClick = {
+                            val parentPath = path.substringBeforeLast('/', "home")
+                            val encodedParentPath = URLEncoder.encode(parentPath, StandardCharsets.UTF_8.toString())
+                            navController.navigate("NoteScreen/$encodedParentPath") {
+                                popUpTo("NoteScreen/$encodedParentPath") { inclusive = true }
+                            }
+                        }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "retour arrière")
+                        }
+
+                    }
+                },
                 actions = {
                     if(noteSelect.isEmpty()){
                         IconButton(onClick = {expanded = true}) {
@@ -219,7 +243,6 @@ fun NoteScreen(
                                 value = filtre,
                                 onValueChange = {
                                     filtre = it
-                                    println(filtre)
                                 },
                                 placeholder = { Text("\uD83D\uDD0D Rechercher") },
                             )

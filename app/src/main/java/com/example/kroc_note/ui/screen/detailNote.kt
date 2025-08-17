@@ -185,7 +185,6 @@ fun Note(note: Note,
                                         ),
                                         selected = state.couleur == couleur,
                                         onClick = {
-                                            println("${note.path} path")
                                             onEvent(NoteEvent.SetColor(couleur))
                                             onEvent(
                                                 NoteEvent.UpdateNote(
