@@ -52,6 +52,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -103,8 +104,10 @@ fun NoteScreen(
         topBar = {
             var expanded by remember { mutableStateOf(false) } //indique si le dropDownMenu est ouvert
             val titreAppBar: String
-            if(path == "home"){
+            if(path == "home") {
                 titreAppBar = "Kroc-Note"
+            }else if(path == "corbeille"){
+                titreAppBar = "Corbeille"
             }else{
                 titreAppBar = path.substringAfterLast('/')
             }
@@ -127,7 +130,7 @@ fun NoteScreen(
                 },
                 actions = {
                     if(noteSelect.isEmpty()){
-                        if(path != "home"){
+                        if(path != "home" && path != "corbeille"){
                             IconButton(onClick = {
                                 println("edit folder")
                                 onEventFolder(FolderEvent.ShowDialog)
@@ -151,6 +154,13 @@ fun NoteScreen(
                                 }
                             )
                             DropdownMenuItem(
+                                text = { Text("Corbeille") },
+                                onClick = {
+                                    expanded = false
+                                    navController.navigate("NoteScreen/corbeille")
+                                }
+                            )
+                            DropdownMenuItem(
                                 text = { Text("Rechercher") },
                                 onClick = {
                                     if(recherche){
@@ -171,12 +181,27 @@ fun NoteScreen(
                             )
                         }
                     }else{
-                        Icon(Icons.Default.Share, contentDescription = "partager")
-                        IconButton(onClick = {
-                            onEventNote(NoteEvent.DeleteManyNoteById(noteSelect.toList()))
-                            noteSelect = emptySet()
-                        }) {
-                            Icon(Icons.Default.Delete, contentDescription = "supprimer")
+                        if(path == "corbeille"){
+                            IconButton(onClick = {
+                                onEventNote(NoteEvent.SetManyPath(noteSelect.toList(), "home"))
+                                noteSelect = emptySet()
+                            }) {
+                                Icon(Icons.Default.Refresh, contentDescription = "restaurer les notes")
+                            }
+                            IconButton(onClick = {
+                                onEventNote(NoteEvent.DeleteManyNoteById(noteSelect.toList()))
+                                noteSelect = emptySet()
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = "supprimer définitivement")
+                            }
+                        }else{
+                            Icon(Icons.Default.Share, contentDescription = "partager")
+                            IconButton(onClick = {
+                                onEventNote(NoteEvent.SetManyPath(noteSelect.toList(), "corbeille"))
+                                noteSelect = emptySet()
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = "mettre à la corbeille")
+                            }
                         }
                     }
                 }
@@ -185,12 +210,14 @@ fun NoteScreen(
         floatingActionButton = {
             var expandedAdd by remember { mutableStateOf(false) }
             Box{
-                FloatingActionButton(
-                    onClick = { expandedAdd = true }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "add note")
+                if (path != "corbeille"){
+                    FloatingActionButton(
+                        onClick = { expandedAdd = true }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "add note")
+                    }
                 }
 
 
@@ -434,7 +461,11 @@ fun NoteCard(
                     if (selectedNote.isNotEmpty()) {
                         onToggleSelection(note.idNote)
                     } else {
-                        navController.navigate("Detail/${note.idNote}")
+                        if(path != "corbeille"){
+                            navController.navigate("Detail/${note.idNote}")
+                        }else{
+                            onToggleSelection(note.idNote)
+                        }
                     }
                 },
                 onLongPress = {

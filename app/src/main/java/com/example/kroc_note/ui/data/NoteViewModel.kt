@@ -147,6 +147,22 @@ class NoteViewModel(
                     autoSave()
                 }
             }
+            is NoteEvent.SetOnePath ->{
+                viewModelScope.launch {
+                    dao.setOnePathById(
+                        id = event.id,
+                        path = event.path
+                    )
+                }
+            }
+            is NoteEvent.SetManyPath -> {
+                viewModelScope.launch {
+                    dao.setAllPathById(
+                        ids = event.ids,
+                        path = event.path
+                    )
+                }
+            }
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)

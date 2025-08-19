@@ -17,6 +17,12 @@ interface NoteDao {
     @Query("DELETE FROM note WHERE idNote IN (:ids)")
     suspend fun deleteAllById(ids: List<Int>)
 
+    @Query("UPDATE note SET path = :path WHERE idNote IN (:ids)")
+    suspend fun setAllPathById(ids: List<Int>, path: String)
+
+    @Query("UPDATE note SET path = :path WHERE idNote = :id")
+    suspend fun setOnePathById(id: Int, path: String)
+
 
     @Query("SELECT * FROM note ORDER BY titre ASC")
     fun getAllNotesAlphabetiqueASC(): Flow<List<Note>>

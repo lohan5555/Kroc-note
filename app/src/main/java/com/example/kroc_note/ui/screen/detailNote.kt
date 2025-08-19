@@ -66,7 +66,11 @@ fun DetailScreen(
                     Icon(Icons.Default.Share, contentDescription = "partager")
                     IconButton(onClick = {
                         if(note != null){
-                            onEvent(NoteEvent.DeleteNote(note))
+                            if(note.path != "corbeille"){
+                                onEvent(NoteEvent.SetOnePath(note.idNote, "corbeille"))
+                            }else{
+                                onEvent(NoteEvent.DeleteNote(note))
+                            }
                         }
                         navController.popBackStack()
                         onEvent(NoteEvent.SetId(0))

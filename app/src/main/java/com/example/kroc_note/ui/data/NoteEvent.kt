@@ -30,4 +30,6 @@ sealed interface NoteEvent {
     data class SortNote(val sortType: SortType): NoteEvent
     data class DeleteNote(val note: Note): NoteEvent
     data class DeleteManyNoteById(val ids: List<Int>): NoteEvent
+    data class SetOnePath(val id: Int, val path: String): NoteEvent
+    data class SetManyPath(val ids: List<Int>, val path: String): NoteEvent
 }
