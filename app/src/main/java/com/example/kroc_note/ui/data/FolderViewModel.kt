@@ -1,18 +1,13 @@
+package com.example.kroc_note.ui.data
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kroc_note.ui.data.FolderDao
-import com.example.kroc_note.ui.data.FolderEvent
-import com.example.kroc_note.ui.data.FolderState
-import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.bddClass.Folder
 import kotlinx.coroutines.flow.combine
-import com.example.kroc_note.ui.data.bddClass.Note
-import com.example.kroc_note.ui.data.type.CouleurNote
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

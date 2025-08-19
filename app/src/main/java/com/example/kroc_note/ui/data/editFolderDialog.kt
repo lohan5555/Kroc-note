@@ -1,4 +1,4 @@
-package com.example.kroc_note.ui.screen
+package com.example.kroc_note.ui.data
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,8 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
-import com.example.kroc_note.ui.data.FolderEvent
-import com.example.kroc_note.ui.data.FolderState
 
 
 @Composable
@@ -24,7 +22,7 @@ fun EditFolderDialog(
     println("path :$path")
     val folder = state.folders.find { it.name == path.substringAfterLast('/')}
     LaunchedEffect(folder) { if (folder != null) {
-        println("folder: ${folder}")
+        println("folder: $folder")
         onEvent(FolderEvent.SetId(folder.idFolder))
         onEvent(FolderEvent.SetName(folder.name))
         onEvent(FolderEvent.SetPath(folder.path))

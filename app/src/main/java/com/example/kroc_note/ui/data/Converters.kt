@@ -1,4 +1,4 @@
-package com.example.kroc_note.ui.data.bddClass
+package com.example.kroc_note.ui.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi

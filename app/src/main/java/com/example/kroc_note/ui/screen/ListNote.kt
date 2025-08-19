@@ -42,12 +42,10 @@ import com.example.kroc_note.ui.data.NoteEvent
 import com.example.kroc_note.ui.data.NoteState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -59,7 +57,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,13 +65,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import com.example.kroc_note.R
+import com.example.kroc_note.ui.data.EditFolderDialog
 import com.example.kroc_note.ui.data.FolderEvent
 import com.example.kroc_note.ui.data.FolderState
 import com.example.kroc_note.ui.data.bddClass.Folder
 import com.example.kroc_note.ui.data.type.SortType
-import com.example.kroc_note.ui.theme.KrocNoteTheme
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -163,11 +159,7 @@ fun NoteScreen(
                             DropdownMenuItem(
                                 text = { Text("Rechercher") },
                                 onClick = {
-                                    if(recherche){
-                                        recherche = false
-                                    }else{
-                                        recherche = true
-                                    }
+                                    recherche = !recherche
                                     expanded = false
                                 }
                             )
@@ -275,7 +267,7 @@ fun NoteScreen(
                     )
                 }
         ) {
-            Column(){
+            Column{
                 if(recherche){
                     Column {
 

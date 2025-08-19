@@ -2,7 +2,6 @@ package com.example.kroc_note.ui.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kroc_note.ui.data.bddClass.Note
