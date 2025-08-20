@@ -128,7 +128,6 @@ fun NoteScreen(
                     if(noteSelect.isEmpty()){
                         if(path != "home" && path != "corbeille"){
                             IconButton(onClick = {
-                                println("edit folder")
                                 onEventFolder(FolderEvent.ShowDialog)
                             }) {
                                 Icon(Icons.Default.Edit, contentDescription = "edit folder")
@@ -234,7 +233,8 @@ fun NoteScreen(
                         text = { Text("Créer un dossier") },
                         onClick = {
                             expandedAdd = false
-                            onEventFolder(FolderEvent.SetName("Dossier"))
+                            val folderName = folderNewName(folders, "Dossier")
+                            onEventFolder(FolderEvent.SetName(folderName))
                             onEventFolder(FolderEvent.SetPath(path))
                             onEventFolder(FolderEvent.SetDateCreation(System.currentTimeMillis()))
                             onEventFolder(FolderEvent.SetDateModification(System.currentTimeMillis()))
@@ -250,7 +250,6 @@ fun NoteScreen(
             .background(MaterialTheme.colorScheme.background),
     ){ padding ->
         if(stateFolder.isEditFolder){
-            println()
             EditFolderDialog(path = path, state = stateFolder, onEvent = onEventFolder)
         }
         Box(
@@ -351,6 +350,18 @@ fun matchText(sort: String):String{
         "MODIF_RECENTE" -> "Modification recente"
         else -> sort
     }
+}
+
+fun folderNewName(folders: List<Folder>, name: String):String{
+    var newName = name
+    var cpt = 1
+    val existingNames = folders.map { it.name }.toSet()
+
+    while (existingNames.contains(newName)) {
+        newName = "$name ($cpt)"
+        cpt++
+    }
+    return newName
 }
 
 //type scellé pour pouvoir creer une liste de Folder et de Note

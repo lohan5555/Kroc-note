@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
+import com.example.kroc_note.ui.data.type.CouleurNote
 
 
 @Composable
@@ -19,10 +20,8 @@ fun EditFolderDialog(
     onEvent: (FolderEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    println("path :$path")
     val folder = state.folders.find { it.name == path.substringAfterLast('/')}
     LaunchedEffect(folder) { if (folder != null) {
-        println("folder: $folder")
         onEvent(FolderEvent.SetId(folder.idFolder))
         onEvent(FolderEvent.SetName(folder.name))
         onEvent(FolderEvent.SetPath(folder.path))
@@ -58,11 +57,17 @@ fun EditFolderDialog(
             }
         },
         confirmButton = {
-            println("sate.name: ${state.name}")
             Button(onClick = {
                 onEvent(FolderEvent.SetDateModification(System.currentTimeMillis()))
                 onEvent(FolderEvent.SaveFolder)
                 onEvent(FolderEvent.HideDialog)
+
+                onEvent(FolderEvent.SetId(0))
+                onEvent(FolderEvent.SetName(""))
+                onEvent(FolderEvent.SetPath("home"))
+                onEvent(FolderEvent.SetColor(CouleurNote.Violet))
+                onEvent(FolderEvent.SetDateCreation(System.currentTimeMillis()))
+                onEvent(FolderEvent.SetDateModification(System.currentTimeMillis()))
             }) {
                 Text("Sauvegarder")
             }
