@@ -56,10 +56,14 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -71,6 +75,7 @@ import com.example.kroc_note.ui.data.FolderEvent
 import com.example.kroc_note.ui.data.FolderState
 import com.example.kroc_note.ui.data.bddClass.Folder
 import com.example.kroc_note.ui.data.type.SortType
+import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -94,10 +99,15 @@ fun NoteScreen(
 
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
     var folderSelect by remember { mutableStateOf(setOf<Int>()) }
+
     var recherche by remember { mutableStateOf(false) }
     var filtre by remember { mutableStateOf("") }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             var expanded by remember { mutableStateOf(false) } //indique si le dropDownMenu est ouvert
             val titreAppBar: String
@@ -351,7 +361,8 @@ fun NoteScreen(
                         }
                     },
                     isDark = isDark,
-                    path = path
+                    path = path,
+                    snackbarHostState = snackbarHostState
                 )
             }
         }
@@ -398,7 +409,8 @@ fun ListItemCard(
     onToggleSelectionNote: (Int) -> Unit,
     onToggleSelectionFolder: (Int) -> Unit,
     isDark: Boolean,
-    path: String
+    path: String,
+    snackbarHostState: SnackbarHostState
 ) {
 
     val notesFilter = filtreNotes(notes, filtre)
@@ -430,7 +442,8 @@ fun ListItemCard(
                         isSelected = noteSelect.contains(item.note.idNote),
                         onToggleSelectionNote = onToggleSelectionNote,
                         selectedNote = noteSelect,
-                        selectedFolder = folderSelect
+                        selectedFolder = folderSelect,
+                        snackbarHostState = snackbarHostState
                     )
                     is ItemUI.FolderItem -> FolderCard(
                         folder = item.folder,
@@ -470,8 +483,10 @@ fun NoteCard(
     isSelected: Boolean,
     onToggleSelectionNote: (Int) -> Unit,
     selectedNote: Set<Int>,
-    selectedFolder: Set<Int>
+    selectedFolder: Set<Int>,
+    snackbarHostState: SnackbarHostState
 ){
+    val scope = rememberCoroutineScope()
     val couleurAffichage: Color = note.couleur.color
     val borderColor = if (isSelected) MaterialTheme.colorScheme.surfaceBright else Color.Transparent
 
@@ -488,7 +503,13 @@ fun NoteCard(
                         if(path != "corbeille"){
                             navController.navigate("Detail/${note.idNote}")
                         }else{
-                            //TODO snackBar
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = "Impossible d’ouvrir une note depuis la corbeille",
+                                    actionLabel = "OK",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
                         }
                     }else if(selectedNote.isNotEmpty() && selectedFolder.isEmpty()){
                         onToggleSelectionNote(note.idNote)
