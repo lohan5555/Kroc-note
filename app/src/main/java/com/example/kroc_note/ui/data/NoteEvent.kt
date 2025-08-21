@@ -13,6 +13,7 @@ sealed interface NoteEvent {
     data class SetDateCreation(val dateCreation: Long): NoteEvent
     data class SetDateModification(val dateModification: Long): NoteEvent
     data class SetPath(val path: String): NoteEvent
+    data class SetOldPath(val oldPath: String): NoteEvent
 
     data class CreateNote(val path: String): NoteEvent
 
@@ -25,6 +26,7 @@ sealed interface NoteEvent {
         val dateModification: Long,
         val dateCreation: Long,
         val path: String,
+        val oldPath: String
     ): NoteEvent
 
     data class SortNote(val sortType: SortType): NoteEvent

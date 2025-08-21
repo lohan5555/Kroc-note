@@ -15,6 +15,7 @@ data class NoteState(
     val dateModification: Long = System.currentTimeMillis(),
     val dateCreation: Long = System.currentTimeMillis(),
     val path: String = "home",
+    val oldPath: String = "home",
 
     val sortType: SortType = SortType.RECENTE
 )

@@ -199,6 +199,7 @@ fun Note(note: Note,
                                                     dateCreation = state.dateCreation,
                                                     dateModification = System.currentTimeMillis(),
                                                     couleur = couleur,
+                                                    oldPath = state.oldPath
                                                 )
                                             )
                                         }

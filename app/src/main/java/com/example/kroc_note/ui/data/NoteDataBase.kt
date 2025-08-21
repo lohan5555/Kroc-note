@@ -10,7 +10,7 @@ import com.example.kroc_note.ui.data.dao.NoteDao
 //définit la configuration de la base de données
 @Database(
     entities = [Note::class, Folder::class],
-    version = 9
+    version = 11
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

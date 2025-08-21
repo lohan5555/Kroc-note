@@ -12,7 +12,8 @@ data class Note(
     val couleur: CouleurNote,
     val dateModification: Long,
     val dateCreation: Long,
-    val path: String
+    val path: String,
+    val oldPath: String
 )
 
 

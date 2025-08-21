@@ -111,12 +111,16 @@ fun NoteScreen(
         topBar = {
             var expanded by remember { mutableStateOf(false) } //indique si le dropDownMenu est ouvert
             val titreAppBar: String
-            if(path == "home") {
-                titreAppBar = "Kroc-Note"
-            }else if(path == "corbeille"){
-                titreAppBar = "Corbeille"
-            }else{
-                titreAppBar = path.substringAfterLast('/')
+            when (path) {
+                "home" -> {
+                    titreAppBar = "Kroc-Note"
+                }
+                "corbeille" -> {
+                    titreAppBar = "Corbeille"
+                }
+                else -> {
+                    titreAppBar = path.substringAfterLast('/')
+                }
             }
 
             TopAppBar(
@@ -493,9 +497,8 @@ fun NoteCard(
     Box(modifier = Modifier
         .padding(8.dp)
         .size(200.dp)
-        //.clip(RoundedCornerShape(16.dp))
         .background(couleurAffichage)
-        .border(width = 3.dp, color = borderColor)//, shape = RoundedCornerShape(16.dp))
+        .border(width = 3.dp, color = borderColor)
         .pointerInput(selectedNote) {
             detectTapGestures(
                 onTap = {

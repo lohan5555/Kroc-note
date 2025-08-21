@@ -58,6 +58,7 @@ class NoteViewModel(
                 val dateModification = state.value.dateModification
                 val dateCreation = state.value.dateCreation
                 val path = event.path
+                val oldPath = state.value.oldPath
 
                 val note = Note(
                     idNote = idNote,
@@ -66,7 +67,8 @@ class NoteViewModel(
                     couleur = couleur,
                     dateModification = dateModification,
                     dateCreation = dateCreation,
-                    path = path
+                    path = path,
+                    oldPath = oldPath
                 )
                 viewModelScope.launch {
                     dao.upsert(note)
@@ -80,7 +82,8 @@ class NoteViewModel(
                     couleur = event.couleur,
                     dateModification = event.dateModification,
                     dateCreation = event.dateCreation,
-                    path = event.path
+                    path = event.path,
+                    oldPath = event.oldPath
                 )
 
                 viewModelScope.launch {
@@ -132,6 +135,12 @@ class NoteViewModel(
                     path = event.path
                 ) }
             }
+            is NoteEvent.SetOldPath -> {
+                currentPath = event.oldPath
+                _state.update { it.copy(
+                    path = event.oldPath
+                ) }
+            }
             is NoteEvent.DeleteManyNoteById -> {
                 viewModelScope.launch {
                     dao.deleteAllById(
@@ -176,7 +185,8 @@ class NoteViewModel(
             couleur = s.couleur,
             dateModification = System.currentTimeMillis(),
             dateCreation = if (s.dateCreation == 0L) System.currentTimeMillis() else s.dateCreation,
-            path = s.path.takeIf { it.isNotBlank() } ?: currentPath
+            path = s.path.takeIf { it.isNotBlank() } ?: currentPath,
+            oldPath = s.oldPath
         )
         viewModelScope.launch {
             dao.upsert(note)
