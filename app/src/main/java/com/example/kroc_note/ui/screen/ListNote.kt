@@ -93,6 +93,7 @@ fun NoteScreen(
     val folders = stateFolder.folders.filter { it.path == path }
 
     var noteSelect by remember { mutableStateOf(setOf<Int>()) }
+    var folderSelect by remember { mutableStateOf(setOf<Int>()) }
     var recherche by remember { mutableStateOf(false) }
     var filtre by remember { mutableStateOf("") }
 
@@ -125,7 +126,7 @@ fun NoteScreen(
                     }
                 },
                 actions = {
-                    if(noteSelect.isEmpty()){
+                    if(noteSelect.isEmpty() && folderSelect.isEmpty()){
                         if(path != "home" && path != "corbeille"){
                             IconButton(onClick = {
                                 onEventFolder(FolderEvent.ShowDialog)
@@ -148,13 +149,15 @@ fun NoteScreen(
                                     expanded = false
                                 }
                             )
-                            DropdownMenuItem(
-                                text = { Text("Corbeille") },
-                                onClick = {
-                                    expanded = false
-                                    navController.navigate("NoteScreen/corbeille")
-                                }
-                            )
+                            if(path != "corbeille"){
+                                DropdownMenuItem(
+                                    text = { Text("Corbeille") },
+                                    onClick = {
+                                        expanded = false
+                                        navController.navigate("NoteScreen/corbeille")
+                                    }
+                                )
+                            }
                             DropdownMenuItem(
                                 text = { Text("Rechercher") },
                                 onClick = {
@@ -171,7 +174,14 @@ fun NoteScreen(
                                 }
                             )
                         }
-                    }else{
+                    }else if(folderSelect.isNotEmpty() && path != "corbeille"){
+                        IconButton(onClick = {
+                            folderSelect = emptySet()
+                            println("supp folder") //TODO
+                        }) {
+                            Icon(Icons.Default.Delete, contentDescription = "supprimer un dossier")
+                        }
+                    }else{   //if noteSelect.isNotEmpty
                         if(path == "corbeille"){
                             IconButton(onClick = {
                                 onEventNote(NoteEvent.SetManyPath(noteSelect.toList(), "home"))
@@ -259,9 +269,8 @@ fun NoteScreen(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
-                            if (noteSelect.isNotEmpty()) {
-                                noteSelect = emptySet()
-                            }
+                            noteSelect = emptySet()
+                            folderSelect = emptySet()
                         }
                     )
                 }
@@ -325,12 +334,20 @@ fun NoteScreen(
                     folders = folders,
                     navController = navController,
                     noteSelect = noteSelect,
+                    folderSelect = folderSelect,
                     filtre = filtre,
-                    onToggleSelection = { id ->
+                    onToggleSelectionNote = { id ->
                         noteSelect = if (noteSelect.contains(id)){
                             noteSelect - id
                         } else {
                             noteSelect + id
+                        }
+                    },
+                    onToggleSelectionFolder = { id ->
+                        folderSelect = if (folderSelect.contains(id)){
+                            folderSelect - id
+                        } else {
+                            folderSelect + id
                         }
                     },
                     isDark = isDark,
@@ -358,7 +375,7 @@ fun folderNewName(folders: List<Folder>, name: String):String{
     val existingNames = folders.map { it.name }.toSet()
 
     while (existingNames.contains(newName)) {
-        newName = "$name ($cpt)"
+        newName = "$name($cpt)"
         cpt++
     }
     return newName
@@ -376,8 +393,10 @@ fun ListItemCard(
     folders: List<Folder>,
     navController: NavController,
     noteSelect: Set<Int>,
+    folderSelect: Set<Int>,
     filtre: String,
-    onToggleSelection: (Int) -> Unit,
+    onToggleSelectionNote: (Int) -> Unit,
+    onToggleSelectionFolder: (Int) -> Unit,
     isDark: Boolean,
     path: String
 ) {
@@ -409,16 +428,19 @@ fun ListItemCard(
                         path = path,
                         navController = navController,
                         isSelected = noteSelect.contains(item.note.idNote),
-                        onToggleSelection = onToggleSelection,
-                        selectedNote = noteSelect
+                        onToggleSelectionNote = onToggleSelectionNote,
+                        selectedNote = noteSelect,
+                        selectedFolder = folderSelect
                     )
                     is ItemUI.FolderItem -> FolderCard(
                         folder = item.folder,
                         path = path,
                         navController = navController,
-                        isSelected = noteSelect.contains(item.folder.idFolder),
+                        isSelected = folderSelect.contains(item.folder.idFolder),
                         selectedNote = noteSelect,
-                        isDark = isDark
+                        selectedFolder = folderSelect,
+                        isDark = isDark,
+                        onToggleSelectionFolder = onToggleSelectionFolder
                     )
                 }
 
@@ -446,8 +468,9 @@ fun NoteCard(
     navController: NavController,
     path: String,
     isSelected: Boolean,
-    onToggleSelection: (Int) -> Unit,
-    selectedNote: Set<Int>
+    onToggleSelectionNote: (Int) -> Unit,
+    selectedNote: Set<Int>,
+    selectedFolder: Set<Int>
 ){
     val couleurAffichage: Color = note.couleur.color
     val borderColor = if (isSelected) MaterialTheme.colorScheme.surfaceBright else Color.Transparent
@@ -455,24 +478,26 @@ fun NoteCard(
     Box(modifier = Modifier
         .padding(8.dp)
         .size(200.dp)
-        .clip(RoundedCornerShape(16.dp))
+        //.clip(RoundedCornerShape(16.dp))
         .background(couleurAffichage)
-        .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(16.dp))
+        .border(width = 3.dp, color = borderColor)//, shape = RoundedCornerShape(16.dp))
         .pointerInput(selectedNote) {
             detectTapGestures(
                 onTap = {
-                    if (selectedNote.isNotEmpty()) {
-                        onToggleSelection(note.idNote)
-                    } else {
+                    if(selectedNote.isEmpty() && selectedFolder.isEmpty()){
                         if(path != "corbeille"){
                             navController.navigate("Detail/${note.idNote}")
                         }else{
-                            onToggleSelection(note.idNote)
+                            //TODO snackBar
                         }
+                    }else if(selectedNote.isNotEmpty() && selectedFolder.isEmpty()){
+                        onToggleSelectionNote(note.idNote)
                     }
                 },
                 onLongPress = {
-                    onToggleSelection(note.idNote)
+                    if (selectedFolder.isEmpty()){
+                        onToggleSelectionNote(note.idNote)
+                    }
                 }
             )
         }
@@ -507,7 +532,9 @@ fun FolderCard(
     navController: NavController,
     isSelected: Boolean,
     selectedNote: Set<Int>,
-    isDark: Boolean
+    selectedFolder: Set<Int>,
+    isDark: Boolean,
+    onToggleSelectionFolder: (Int) -> Unit
 ){
     val couleurAffichage: Color = folder.color.color
     val borderColor = if (isSelected) MaterialTheme.colorScheme.surfaceBright else Color.Transparent
@@ -518,11 +545,20 @@ fun FolderCard(
         .clip(RoundedCornerShape(16.dp))
         .background(couleurAffichage)
         .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(16.dp))
-        .pointerInput(selectedNote) {
+        .pointerInput(selectedFolder) {
             detectTapGestures(
                 onTap = {
-                    navController.navigate("NoteScreen/${Uri.encode(path + "/" + folder.name)}")
+                    if(selectedFolder.isEmpty() && selectedNote.isEmpty()){
+                        navController.navigate("NoteScreen/${Uri.encode(path + "/" + folder.name)}")
+                    }else if(selectedFolder.isNotEmpty() && selectedNote.isEmpty()){
+                        onToggleSelectionFolder(folder.idFolder)
+                    }
                 },
+                onLongPress = {
+                    if(selectedNote.isEmpty()) {
+                        onToggleSelectionFolder(folder.idFolder)
+                    }
+                }
             )
         }
     ){
