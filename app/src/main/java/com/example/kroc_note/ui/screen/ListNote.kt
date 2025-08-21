@@ -198,7 +198,7 @@ fun NoteScreen(
                     }else{   //if noteSelect.isNotEmpty
                         if(path == "corbeille"){
                             IconButton(onClick = {
-                                onEventNote(NoteEvent.SetManyPath(noteSelect.toList(), "home"))
+                                onEventNote(NoteEvent.SetManyPathRestaure(noteSelect.toList()))
                                 noteSelect = emptySet()
                             }) {
                                 Icon(Icons.Default.Refresh, contentDescription = "restaurer les notes")
@@ -212,7 +212,8 @@ fun NoteScreen(
                         }else{
                             Icon(Icons.Default.Share, contentDescription = "partager")
                             IconButton(onClick = {
-                                onEventNote(NoteEvent.SetManyPath(noteSelect.toList(), "corbeille"))
+                                onEventNote(NoteEvent.SetManyOldPath(noteSelect.toList()))
+                                onEventNote(NoteEvent.SetManyPathCorbeille(noteSelect.toList()))
                                 noteSelect = emptySet()
                             }) {
                                 Icon(Icons.Default.Delete, contentDescription = "mettre à la corbeille")

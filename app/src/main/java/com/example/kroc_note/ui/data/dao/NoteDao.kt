@@ -20,6 +20,15 @@ interface NoteDao {
     @Query("UPDATE note SET path = :path WHERE idNote IN (:ids)")
     suspend fun setAllPathById(ids: List<Int>, path: String)
 
+    @Query("UPDATE note SET oldPath = path WHERE idNote IN (:ids)")
+    suspend fun setAllOldPathById(ids: List<Int>)
+
+    @Query("UPDATE note SET path = oldPath WHERE idNote IN (:ids)")
+    suspend fun setAllPathRestaure(ids: List<Int>)
+
+    @Query("UPDATE note SET path = 'corbeille' WHERE idNote IN (:ids)")
+    suspend fun setAllPathCorbeille(ids: List<Int>)
+
     @Query("UPDATE note SET path = :path WHERE idNote = :id")
     suspend fun setOnePathById(id: Int, path: String)
 

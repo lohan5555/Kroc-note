@@ -34,4 +34,7 @@ sealed interface NoteEvent {
     data class DeleteManyNoteById(val ids: List<Int>): NoteEvent
     data class SetOnePath(val id: Int, val path: String): NoteEvent
     data class SetManyPath(val ids: List<Int>, val path: String): NoteEvent
+    data class SetManyOldPath(val ids: List<Int>): NoteEvent
+    data class SetManyPathRestaure(val ids: List<Int>): NoteEvent
+    data class SetManyPathCorbeille(val ids: List<Int>): NoteEvent
 }

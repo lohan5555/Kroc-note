@@ -171,6 +171,27 @@ class NoteViewModel(
                     )
                 }
             }
+            is NoteEvent.SetManyOldPath -> {
+                viewModelScope.launch {
+                    dao.setAllOldPathById(
+                        ids = event.ids,
+                    )
+                }
+            }
+            is NoteEvent.SetManyPathRestaure -> {
+                viewModelScope.launch {
+                    dao.setAllPathRestaure(
+                        ids = event.ids,
+                    )
+                }
+            }
+            is NoteEvent.SetManyPathCorbeille -> {
+                viewModelScope.launch {
+                    dao.setAllPathCorbeille(
+                        ids = event.ids,
+                    )
+                }
+            }
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
