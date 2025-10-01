@@ -57,6 +57,7 @@ Page de la corbeille: avec le thème sombre<br><br>
 
 ## Améliorations futures
 
+Le développement de cette application n'est pas aboutie, et elle est voué à évoluer à l'avenir. Certaine fonctionnalité ne sont donc peut-être pas complètement opérationel. Voici une liste non-exaustive de potentiel fonctionnalité qui pouront être ajoutées:
 - Ajouter des dates à une note pour envoyer des notifications de rappels
 - Partager une note
 - Possibiliter d'importer des images et des audios
